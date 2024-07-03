@@ -1,4 +1,5 @@
-import numpy 
+import numpy
+
 
 def _datacopied(arr, original):
     """

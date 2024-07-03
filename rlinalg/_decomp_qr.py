@@ -8,13 +8,7 @@ from ._misc import _datacopied
 QRResult = collections.namedtuple("QRResult", "Q R P")
 
 
-def qr(
-    a,
-    overwrite_a=False,
-    mode='full',
-    check_finite=True,
-    tol=1e-12
-):
+def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
     """
     Compute QR decomposition of a matrix.
 
@@ -48,13 +42,13 @@ def qr(
         this value.
 
     """
-    if mode not in {'full', 'qr', 'r', 'economic', 'raw'}:
+    if mode not in {"full", "qr", "r", "economic", "raw"}:
         raise ValueError(
             "Mode argument should be one of ['full', 'r', 'economic', 'raw']"
         )
 
     asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-    a1 = asarray(a, order='F', dtype=numpy.double)
+    a1 = asarray(a, order="F", dtype=numpy.double)
     if len(a1.shape) != 2:
         raise ValueError("expected a 2-D array")
 
@@ -69,24 +63,24 @@ def qr(
     qr, rank, jpvt, tau, _, _ = linpack.dqrdc2(a1, tol=tol, overwrite_a=overwrite_a)
     jpvt -= 1
 
-    if mode not in {'economic', 'raw'} or M < N:
+    if mode not in {"economic", "raw"} or M < N:
         R = numpy.triu(qr)
     else:
         R = numpy.triu(qr[:N, :])
 
-    if mode == 'r':
+    if mode == "r":
         return R, jpvt
-    elif mode == 'raw':
+    elif mode == "raw":
         return ((qr, tau), R, jpvt)
-    
+
     if M < N:
-        D = numpy.eye(M, dtype=numpy.double, order='F')
+        D = numpy.eye(M, dtype=numpy.double, order="F")
         Q = linpack.dqrqy(qr[:, :M], tau, D, overwrite_a=True)
-    elif mode == 'economic':
-        D = numpy.eye(M, N, dtype=numpy.double, order='F')
+    elif mode == "economic":
+        D = numpy.eye(M, N, dtype=numpy.double, order="F")
         Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
     else:
-        D = numpy.eye(M, dtype=numpy.double, order='F')
+        D = numpy.eye(M, dtype=numpy.double, order="F")
         Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
 
     return QRResult(Q, R, jpvt)

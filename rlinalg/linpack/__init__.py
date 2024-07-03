@@ -12,7 +12,7 @@ def _asarray_validated(
     sparse_ok=False,
     mask_ok=False,
     dtype=numpy.double,
-    order='F',
+    order="F",
 ):
     """
     Helper function for argument validation (adapted from SciPy).
@@ -49,14 +49,17 @@ def _asarray_validated(
     """
     if not sparse_ok:
         import scipy.sparse
+
         if scipy.sparse.issparse(a):
-            msg = ('Sparse matrices are not supported by this function. '
-                   'Perhaps one of the scipy.sparse.linalg functions '
-                   'would work instead.')
+            msg = (
+                "Sparse matrices are not supported by this function. "
+                "Perhaps one of the scipy.sparse.linalg functions "
+                "would work instead."
+            )
             raise ValueError(msg)
     if not mask_ok:
         if numpy.ma.isMaskedArray(a):
-            raise ValueError('masked arrays are not supported')
+            raise ValueError("masked arrays are not supported")
     toarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
     a = toarray(a, dtype=dtype, order=order)
     return a
@@ -87,17 +90,19 @@ def dqrdc2(
 
     """
 
-    a1 = atleast_2d(_asarray_validated(a, check_finite=check_finite, order='F', dtype=numpy.double))
+    a1 = atleast_2d(
+        _asarray_validated(a, check_finite=check_finite, order="F", dtype=numpy.double)
+    )
     overwrite_a = overwrite_a or _datacopied(a1, a)
 
     n, p = a1.shape
 
-    tau = numpy.zeros(p, dtype=numpy.double, order='F')
-    work = numpy.zeros((p, 2), dtype=numpy.double, order='F')
+    tau = numpy.zeros(p, dtype=numpy.double, order="F")
+    work = numpy.zeros((p, 2), dtype=numpy.double, order="F")
     jpvt = numpy.arange(1, p + 1, dtype=numpy.int32)
 
     if not overwrite_a:
-        a1 = numpy.array(a1, order='F', dtype=numpy.double)
+        a1 = numpy.array(a1, order="F", dtype=numpy.double)
 
     try:
         x, _, k, *_ = _dqrdc2(a1, n, n, p, tol, 0, tau, jpvt, work)
@@ -116,12 +121,16 @@ def dqrqy(
     overwrite_a=False,
     check_finite=True,
 ):
-    qr1 = atleast_2d(_asarray_validated(qr, check_finite=check_finite, order='F', dtype=numpy.double))
-    a1 = atleast_2d(_asarray_validated(a, check_finite=check_finite, order='F', dtype=numpy.double))
+    qr1 = atleast_2d(
+        _asarray_validated(qr, check_finite=check_finite, order="F", dtype=numpy.double)
+    )
+    a1 = atleast_2d(
+        _asarray_validated(a, check_finite=check_finite, order="F", dtype=numpy.double)
+    )
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
     if not overwrite_a:
-        a1 = numpy.array(a1, order='F', dtype=numpy.double)
+        a1 = numpy.array(a1, order="F", dtype=numpy.double)
 
     _dqrqy(qr1, qr1.shape[0], qr1.shape[1], tau, a1, a1.shape[1], a1)
     return a1

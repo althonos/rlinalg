@@ -1,5 +1,4 @@
 import os
-import glob
 import configparser
 import shutil
 
@@ -14,15 +13,14 @@ import fmodpy
 
 
 class sdist(distutils.command.sdist.sdist):
-    """A `sdist` that generates a `pyproject.toml` on the fly.
-    """
+    """A `sdist` that generates a `pyproject.toml` on the fly."""
 
     def run(self):
         # build `pyproject.toml` from `setup.cfg`
         c = configparser.ConfigParser()
         c.add_section("build-system")
         c.set("build-system", "requires", str(self.distribution.setup_requires))
-        c.set("build-system", 'build-backend', '"setuptools.build_meta"')
+        c.set("build-system", "build-backend", '"setuptools.build_meta"')
         with open("pyproject.toml", "w") as pyproject:
             c.write(pyproject)
         # run the rest of the packaging
@@ -52,7 +50,9 @@ class build_ext(setuptools.command.build_ext.build_ext):
 
         if len(ext.sources) > 1:
             source = os.path.join(self.build_temp, "{}.f".format(basename))
-            self.make_file(ext.sources, source, self._merge_sources, (ext.sources, source))
+            self.make_file(
+                ext.sources, source, self._merge_sources, (ext.sources, source)
+            )
         else:
             source = ext.sources[0]
 
@@ -99,7 +99,10 @@ setuptools.setup(
         setuptools.Extension(
             "rlinalg.linpack._dqrutl",
             language="fortran",
-            sources=["vendor/r-source/src/appl/dqrutl.f", "vendor/r-source/src/appl/dqrsl.f"],
+            sources=[
+                "vendor/r-source/src/appl/dqrutl.f",
+                "vendor/r-source/src/appl/dqrsl.f",
+            ],
         ),
     ],
 )
