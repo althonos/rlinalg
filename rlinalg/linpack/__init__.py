@@ -4,6 +4,7 @@ from numpy import atleast_2d
 from .._misc import _datacopied, _asarray_validated
 from ._dqrdc2 import dqrdc2 as _dqrdc2
 from ._dqrutl import dqrqy as _dqrqy
+from ._dtrco import dtrco as _dtrco
 
 
 def dqrdc2(
@@ -62,6 +63,9 @@ def dqrqy(
     overwrite_a=False,
     check_finite=True,
 ):
+    """
+    Wrapper for ``dqrqy``.
+    """
     qr1 = atleast_2d(
         _asarray_validated(qr, check_finite=check_finite, order="F", dtype=numpy.double)
     )
@@ -75,3 +79,22 @@ def dqrqy(
 
     _dqrqy(qr1, qr1.shape[0], qr1.shape[1], tau, a1, a1.shape[1], a1)
     return a1
+
+
+def dtrco(
+    a,
+    lower=False,
+    check_finite=True,
+):
+    """
+    Wrapper for ``drtco``.
+    """
+    a1 = atleast_2d(
+        _asarray_validated(a, check_finite=check_finite, order="F", dtype=numpy.double)
+    )
+
+    m, n = a1.shape
+    z = numpy.zeros(n, order="F", dtype=numpy.double)
+
+    _, _, _, rcond, z, _ = _dtrco(a1, m, n, 0, z, 1 - bool(lower))
+    return rcond, z

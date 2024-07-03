@@ -104,5 +104,10 @@ setuptools.setup(
                 "vendor/r-source/src/appl/dqrsl.f",
             ],
         ),
+        setuptools.Extension(
+            "rlinalg.linpack._dtrco",
+            language="fortran",
+            sources=["vendor/r-source/src/appl/dtrco.f"],
+        ),
     ],
 )
