@@ -1,32 +1,31 @@
-# 🚀 `rlinalg` [![Stars](https://img.shields.io/github/stars/althonos/mini3di.svg?style=social&maxAge=3600&label=Star)](https://github.com/althonos/mini3di/stargazers)
+# ®️ `rlinalg` [![Stars](https://img.shields.io/github/stars/althonos/rlinalg.svg?style=social&maxAge=3600&label=Star)](https://github.com/althonos/rlinalg/stargazers)
 
-*A [NumPy](https://numpy.org/) port of the [`foldseek`](https://github.com/steineggerlab/foldseek) code for encoding structures to 3di.*
+*Linear Algebra routines as implemented the [R language](https://www.r-project.org/).*
 
-[![Actions](https://img.shields.io/github/actions/workflow/status/althonos/mini3di/test.yml?branch=main&logo=github&style=flat-square&maxAge=300)](https://github.com/althonos/mini3di/actions)
-[![Coverage](https://img.shields.io/codecov/c/gh/althonos/mini3di?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/mini3di/)
+[![Actions](https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/test.yml?branch=main&logo=github&style=flat-square&maxAge=300)](https://github.com/althonos/rlinalg/actions)
+[![Coverage](https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/rlinalg/)
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
-[![PyPI](https://img.shields.io/pypi/v/mini3di.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/mini3di)
-[![Bioconda](https://img.shields.io/conda/vn/bioconda/mini3di?style=flat-square&maxAge=3600&logo=anaconda)](https://anaconda.org/bioconda/mini3di)
-[![Wheel](https://img.shields.io/pypi/wheel/mini3di.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/mini3di/#files)
-[![Python Versions](https://img.shields.io/pypi/pyversions/mini3di.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/mini3di/#files)
-[![Python Implementations](https://img.shields.io/badge/impl-universal-success.svg?style=flat-square&maxAge=3600&label=impl)](https://pypi.org/project/mini3di/#files)
-[![Source](https://img.shields.io/badge/source-GitHub-303030.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/mini3di/)
-[![Mirror](https://img.shields.io/badge/mirror-EMBL-009f4d?style=flat-square&maxAge=2678400)](https://git.embl.de/larralde/mini3di/)
-[![GitHub issues](https://img.shields.io/github/issues/althonos/mini3di.svg?style=flat-square&maxAge=600)](https://github.com/althonos/mini3di/issues)
-[![Docs](https://img.shields.io/readthedocs/mini3di/latest?style=flat-square&maxAge=600)](https://mini3di.readthedocs.io)
-[![Changelog](https://img.shields.io/badge/keep%20a-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/mini3di/blob/master/CHANGELOG.md)
-[![Downloads](https://img.shields.io/pypi/dm/mini3di?style=flat-square&color=303f9f&maxAge=86400&label=downloads)](https://pepy.tech/project/mini3di)
+[![PyPI](https://img.shields.io/pypi/v/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg)
+[![Bioconda](https://img.shields.io/conda/vn/bioconda/rlinalg?style=flat-square&maxAge=3600&logo=anaconda)](https://anaconda.org/bioconda/rlinalg)
+[![Wheel](https://img.shields.io/pypi/wheel/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
+[![Python Versions](https://img.shields.io/pypi/pyversions/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
+[![Python Implementations](https://img.shields.io/badge/impl-universal-success.svg?style=flat-square&maxAge=3600&label=impl)](https://pypi.org/project/rlinalg/#files)
+[![Source](https://img.shields.io/badge/source-GitHub-303030.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/rlinalg/)
+[![Mirror](https://img.shields.io/badge/mirror-EMBL-009f4d?style=flat-square&maxAge=2678400)](https://git.embl.de/larralde/rlinalg/)
+[![GitHub issues](https://img.shields.io/github/issues/althonos/rlinalg.svg?style=flat-square&maxAge=600)](https://github.com/althonos/rlinalg/issues)
+[![Docs](https://img.shields.io/readthedocs/rlinalg/latest?style=flat-square&maxAge=600)](https://rlinalg.readthedocs.io)
+[![Changelog](https://img.shields.io/badge/keep%20a-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/rlinalg/blob/master/CHANGELOG.md)
+[![Downloads](https://img.shields.io/pypi/dm/rlinalg?style=flat-square&color=303f9f&maxAge=86400&label=downloads)](https://pepy.tech/project/rlinalg)
 
 ## 🗺️ Overview
 
 [The R Project for Statistical Computing](https://www.r-project.org/) provides
 an environment for using and developing statistical methods. Most of the array
 manipulation and linear algebra routines are implemented using 
-[LAPACK]. In Python, the [NumPy] library can be used for array manipulation, 
-while [SciPy] offers access to [LAPACK]. 
+[LAPACK], which can be accessed in Python using [SciPy] and [NumPy].
 
 However, when trying to port and reproduce code from R in Python, one can 
-notice differences in the implementation of several rountines, in particular
+notice differences in the implementation of several routines, in particular
 in the [$QR$ decomposition](https://en.wikipedia.org/wiki/QR_decomposition) 
 with pivoting enabled:
 
@@ -51,24 +50,25 @@ The culprit here is the [`qr`] function from R not using [LAPACK] [`dgeqp3`]
 by default, but a modified R-specific version of the [LINPACK] [`dqrdc`] 
 routine (`dqrdc2`) that optimizes the pivoting strategy. This means that code 
 using [`qr`] in R will behave differently than an equivalent Python using 
-[LAPACK], and there is (so far) no way to reproduce the R behaviour.
+[LAPACK], and there was (until now) no way to reproduce the R behaviour.
 
 The `rlinalg` library provides linear algebra routines from R using the 
 Fortran sources to allow reproducibility. It exposes an API similar to 
 the `scipy` interface for similar functions (`qr`, `cond`), which can be used
 to get the same results as R:
 
-
 ```python
 >>> mat = numpy.arange(1, 10).reshape(3, 3)
->>> rlinalg.qr(mat, pivoting = True)[0].round(7)
+>>> rlinalg.qr(mat).Q.round(7)
 array([[-0.1230915  0.904534   0.4082483]
        [-0.492366   0.3015113 -0.8164966]
        [-0.8616404 -0.3015113  0.4082483]])
 ```
 
-This library only depends on NumPy and is available for all modern Python 
-versions (3.6+).
+This library depends on NumPy, and on the [LAPACK] and [BLAS] libraries shared
+on the system. It is available for all modern Python versions (3.6+). 
+Building is done with `fmodpy` and requires a Fortran compiler when compiling 
+from source.
 
 [`qr`]: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr
 [LAPACK]: https://www.netlib.org/lapack/
