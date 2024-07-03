@@ -1,0 +1,4 @@
+[submodule "vendor/r-source"]
+	path = vendor/r-source
+	url = https://github.com/wch/r-source
+	branch = tags/R-3-3-1
