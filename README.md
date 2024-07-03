@@ -42,9 +42,9 @@ with pivoting enabled:
 ```python
 >>> mat = numpy.arange(1, 10).reshape(3, 3)
 >>> scipy.linalg.qr(mat, pivoting = True)[0]
-array([[-0.26726124,  0.87287156,  0.40824829],
-       [-0.53452248,  0.21821789, -0.81649658],
-       [-0.80178373, -0.43643578,  0.40824829]])
+array([[-0.2672612  0.8728716  0.4082483]
+       [-0.5345225  0.2182179 -0.8164966]
+       [-0.8017837 -0.4364358  0.4082483]])
 ```
 
 The culprit here is the [`qr`] function from R not using [LAPACK] [`dgeqp3`] 
@@ -55,17 +55,20 @@ using [`qr`] in R will behave differently than an equivalent Python using
 
 The `rlinalg` library provides linear algebra routines from R using the 
 Fortran sources to allow reproducibility. It exposes an API similar to 
-the `scipy` interface for similar functions (`qr`, `cond`).
-This library only depends on NumPy and is available for all modern Python 
-versions (3.6+).
+the `scipy` interface for similar functions (`qr`, `cond`), which can be used
+to get the same results as R:
+
 
 ```python
 >>> mat = numpy.arange(1, 10).reshape(3, 3)
->>> rlinalg.qr(mat, pivoting = True).Q
-array([[-0.26726124,  0.87287156,  0.40824829],
-       [-0.53452248,  0.21821789, -0.81649658],
-       [-0.80178373, -0.43643578,  0.40824829]])
+>>> rlinalg.qr(mat, pivoting = True)[0].round(7)
+array([[-0.1230915  0.904534   0.4082483]
+       [-0.492366   0.3015113 -0.8164966]
+       [-0.8616404 -0.3015113  0.4082483]])
 ```
+
+This library only depends on NumPy and is available for all modern Python 
+versions (3.6+).
 
 [`qr`]: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr
 [LAPACK]: https://www.netlib.org/lapack/
