@@ -48,7 +48,7 @@ array([[-0.2672612  0.8728716  0.4082483]
 ```
 
 The culprit here is the [`qr`] function from R not using [LAPACK] [`dgeqp3`] 
-by default, but a R-specific modified version of the [LINPACK] [`dqrdc`] 
+by default, but a modified R-specific version of the [LINPACK] [`dqrdc`] 
 routine (`dqrdc2`) that optimizes the pivoting strategy. This means that code 
 using [`qr`] in R will behave differently than an equivalent Python using 
 [LAPACK], and there is (so far) no way to reproduce the R behaviour.

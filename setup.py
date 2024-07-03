@@ -52,7 +52,6 @@ class build_ext(setuptools.command.build_ext.build_ext):
 
         if len(ext.sources) > 1:
             source = os.path.join(self.build_temp, "{}.f".format(basename))
-            print(f"{source=}")
             self.make_file(ext.sources, source, self._merge_sources, (ext.sources, source))
         else:
             source = ext.sources[0]

@@ -1,0 +1,7 @@
+include COPYING
+include README.md
+include vendor/r-source/COPYING
+include vendor/r-source/src/appl/*.f
+
+prune rlinalg/linpack/_dqrdc2
+prune rlinalg/linpack/_dqrutl

@@ -5,12 +5,12 @@ from ._misc import _datacopied
 
 
 def qr(
-    a, 
-    overwrite_a=False, 
-    lwork=None, 
-    mode='full', 
-    pivoting=False, 
-    check_finite=True, 
+    a,
+    overwrite_a=False,
+    lwork=None,
+    mode='full',
+    pivoting=False,
+    check_finite=True,
     tol=1e-12
 ):
     """
@@ -33,12 +33,12 @@ def qr(
         Determines what information is to be returned: either both Q and R
         ('full', default), only R ('r') or both Q and R but computed in
         economy-size ('economic', see Notes). The final option 'raw'
-        (added in SciPy 0.11) makes the function return two matrices
-        (Q, TAU) in the internal format used by LINPACK.
+        makes the function return two matrices (Q, TAU) in the internal
+        format used by LINPACK.
     pivoting : bool, optional
         Whether or not factorization should include pivoting for rank-revealing
         qr decomposition. If pivoting, compute the decomposition
-        ``A[:, P] = Q @ R`` as above, but where P is chosen such that the 
+        ``A[:, P] = Q @ R`` as above, but where P is chosen such that the
         diagonal of R is non-increasing.
     check_finite : bool, optional
         Whether to check that the input matrix contains only finite numbers.
@@ -73,7 +73,7 @@ def qr(
         R = numpy.triu(qr)
     else:
         R = numpy.triu(qr[:N, :])
-    
+
     if pivoting:
         Rj = R, jpvt
     else:
