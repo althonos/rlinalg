@@ -1,6 +1,8 @@
 import os
 import glob
 import configparser
+import shutil
+
 import setuptools
 import setuptools.extension
 import setuptools.command.build_ext
@@ -41,8 +43,18 @@ class build_ext(setuptools.command.build_ext.build_ext):
         output_dir = os.path.abspath(os.path.dirname(path))
         self.mkpath(output_dir)
 
+        if len(ext.sources) > 1:
+            merged = os.path.join(self.build_temp, "{}.f".format(basename))
+            self.mkpath(self.build_temp)
+            with open(merged, "w") as dst:
+                for source in ext.sources:
+                    with open(source) as src:
+                        shutil.copyfileobj(src, dst)
+        else:
+            merged = ext.sources[0]
+
         fmodpy.fimport(
-            ext.sources[0],
+            merged,
             name=ext.name.split(".")[-1],
             output_dir=output_dir,
             blas=True,
@@ -80,7 +92,7 @@ setuptools.setup(
         setuptools.Extension(
             "rlinalg.linpack._dqrutl",
             language="fortran",
-            sources=["vendor/r-source/src/appl/dqrsl.f"],
+            sources=["vendor/r-source/src/appl/dqrutl.f", "vendor/r-source/src/appl/dqrsl.f"],
         ),
     ],
 )
