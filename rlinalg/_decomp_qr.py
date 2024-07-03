@@ -66,6 +66,7 @@ def qr(
 
     if pivoting:
         qr, rank, jpvt, tau, _, _ = linpack.dqrdc2(a1, tol=tol, overwrite_a=overwrite_a)
+        jpvt -= 1
     else:
         raise NotImplementedError
 
