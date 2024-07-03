@@ -2,12 +2,13 @@ import collections
 import numpy
 
 from . import linpack
-from ._misc import _datacopied
+from ._misc import _datacopied, set_module
 
 
 QRResult = collections.namedtuple("QRResult", "Q R P")
 
 
+@set_module("rlinalg")
 def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
     """
     Compute QR decomposition of a matrix.

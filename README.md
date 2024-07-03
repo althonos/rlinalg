@@ -21,12 +21,12 @@
 
 [The R Project for Statistical Computing](https://www.r-project.org/) provides
 an environment for using and developing statistical methods. Most of the array
-manipulation and linear algebra routines are implemented using 
+manipulation and linear algebra routines are implemented using
 [LAPACK], which can be accessed in Python using [SciPy] and [NumPy].
 
-However, when trying to port and reproduce code from R in Python, one can 
+However, when trying to port and reproduce code from R in Python, one can
 notice differences in the implementation of several routines, in particular
-in the [$QR$ decomposition](https://en.wikipedia.org/wiki/QR_decomposition) 
+in the [$QR$ decomposition](https://en.wikipedia.org/wiki/QR_decomposition)
 with pivoting enabled:
 
 ```r
@@ -46,16 +46,16 @@ array([[-0.2672612  0.8728716  0.4082483]
        [-0.8017837 -0.4364358  0.4082483]])
 ```
 
-The culprit here is the [`qr`] function from R not using [LAPACK] [`dgeqp3`] 
-by default, but a modified R-specific version of the [LINPACK] [`dqrdc`] 
-routine (`dqrdc2`) that optimizes the pivoting strategy. This means that code 
-using [`qr`] in R will behave differently than an equivalent Python using 
+The culprit here is the [`qr`] function from R not using [LAPACK] [`dgeqp3`]
+by default, but a modified R-specific version of the [LINPACK] [`dqrdc`]
+routine (`dqrdc2`) that optimizes the pivoting strategy. This means that code
+using [`qr`] in R will behave differently than an equivalent Python using
 [LAPACK], and there was (until now) no way to reproduce the R behaviour.
 
-The `rlinalg` library provides linear algebra routines from R using the 
-Fortran sources to allow reproducibility. It exposes an API similar to 
-the `scipy` interface for similar functions (`qr`, `cond`), which can be used
-to get the same results as R:
+The `rlinalg` library provides linear algebra routines from R using the
+Fortran sources to allow reproducibility. It exposes an API similar to
+the `scipy` interface for similar functions (`qr`, `kappa`), which can
+be used to get the same results as R:
 
 ```python
 >>> mat = numpy.arange(1, 10).reshape(3, 3)
@@ -65,9 +65,9 @@ array([[-0.1230915  0.904534   0.4082483]
        [-0.8616404 -0.3015113  0.4082483]])
 ```
 
-This library depends on NumPy, and on the [LAPACK] and [BLAS] libraries shared
-on the system. It is available for all modern Python versions (3.6+). 
-Building is done with `fmodpy` and requires a Fortran compiler when compiling 
+This library depends on [NumPy], and on the [LAPACK] and [BLAS] libraries shared
+on the system. It is available for all modern Python versions (3.6+).
+Building is done with `fmodpy` and requires a Fortran compiler when compiling
 from source.
 
 [`qr`]: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr

@@ -3,7 +3,7 @@ import math
 import numpy
 
 from . import linpack
-from ._misc import _asarray_validated
+from ._misc import _asarray_validated, set_module
 from ._decomp_qr import qr
 
 
@@ -24,6 +24,7 @@ def _kappa_tri(a, lower=False, norm=None, check_finite=True):
     return 1 / rcond
 
 
+@set_module("rlinalg")
 def kappa(a, exact=False, norm=None, method="qr", check_finite=True, lower=False):
     """
     Compute or estimate the condition number of a matrix.
