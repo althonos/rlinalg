@@ -34,6 +34,13 @@ class build_ext(setuptools.command.build_ext.build_ext):
     def run(self):
         self.build_extensions()
 
+    def _merge_sources(self, sources, output):
+        self.mkpath(self.build_temp)
+        with open(output, "w") as dst:
+            for source in sources:
+                with open(source) as src:
+                    shutil.copyfileobj(src, dst)
+
     def build_extension(self, ext):
         if ext.language != "fortran":
             return setuptools.command.build_ext.build_ext.build_extension(self, ext)
@@ -44,22 +51,23 @@ class build_ext(setuptools.command.build_ext.build_ext):
         self.mkpath(output_dir)
 
         if len(ext.sources) > 1:
-            merged = os.path.join(self.build_temp, "{}.f".format(basename))
-            self.mkpath(self.build_temp)
-            with open(merged, "w") as dst:
-                for source in ext.sources:
-                    with open(source) as src:
-                        shutil.copyfileobj(src, dst)
+            source = os.path.join(self.build_temp, "{}.f".format(basename))
+            print(f"{source=}")
+            self.make_file(ext.sources, source, self._merge_sources, (ext.sources, source))
         else:
-            merged = ext.sources[0]
+            source = ext.sources[0]
+
+        ext_dir = os.path.join(output_dir, basename)
+        if os.path.exists(ext_dir) and self.force:
+            shutil.rmtree(ext_dir)
 
         fmodpy.fimport(
-            merged,
-            name=ext.name.split(".")[-1],
+            source,
+            name=basename,
             output_dir=output_dir,
             blas=True,
             lapack=True,
-            build_dir=self.build_temp,
+            build_dir=os.path.join(self.build_temp, "fmodpy"),
             rebuild=bool(self.force),
         )
 
