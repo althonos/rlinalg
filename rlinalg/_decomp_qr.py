@@ -1,7 +1,11 @@
+import collections
 import numpy
 
 from . import linpack
 from ._misc import _datacopied
+
+
+QRResult = collections.namedtuple("QRResult", "Q R P")
 
 
 def qr(
@@ -74,11 +78,15 @@ def qr(
         return R, jpvt
     elif mode == 'raw':
         return ((qr, tau), R, jpvt)
-
-    if mode == 'economic':
-        raise NotImplementedError
+    
+    if M < N:
+        D = numpy.eye(M, dtype=numpy.double, order='F')
+        Q = linpack.dqrqy(qr[:, :M], tau, D, overwrite_a=True)
+    elif mode == 'economic':
+        D = numpy.eye(M, N, dtype=numpy.double, order='F')
+        Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
     else:
         D = numpy.eye(M, dtype=numpy.double, order='F')
         Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
 
-    return Q, R, jpvt
+    return QRResult(Q, R, jpvt)

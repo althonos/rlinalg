@@ -7,9 +7,9 @@ from ._dqrutl import dqrqy as _dqrqy
 
 
 def _asarray_validated(
-    a, 
+    a,
     check_finite=True,
-    sparse_ok=False, 
+    sparse_ok=False,
     mask_ok=False,
     dtype=numpy.double,
     order='F',
@@ -63,7 +63,7 @@ def _asarray_validated(
 
 
 def dqrdc2(
-    a, 
+    a,
     tol=1e-12,
     overwrite_a=False,
     check_finite=True,
@@ -118,10 +118,10 @@ def dqrqy(
 ):
     qr1 = atleast_2d(_asarray_validated(qr, check_finite=check_finite, order='F', dtype=numpy.double))
     a1 = atleast_2d(_asarray_validated(a, check_finite=check_finite, order='F', dtype=numpy.double))
-    
+
     overwrite_a = overwrite_a or _datacopied(a1, a)
     if not overwrite_a:
         a1 = numpy.array(a1, order='F', dtype=numpy.double)
 
-    _dqrqy(qr1, qr1.shape[0], qr1.shape[1], tau, a1, a1.shape[0], a1)
+    _dqrqy(qr1, qr1.shape[0], qr1.shape[1], tau, a1, a1.shape[1], a1)
     return a1
