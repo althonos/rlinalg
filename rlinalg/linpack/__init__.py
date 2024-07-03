@@ -100,7 +100,7 @@ def dqrdc2(
         a1 = numpy.array(a1, order='F', dtype=numpy.double)
 
     try:
-        x, _, k, *_ = _dqrdc2(a1, p, n, p, tol, 0, tau, jpvt, work)
+        x, _, k, *_ = _dqrdc2(a1, n, n, p, tol, 0, tau, jpvt, work)
     except ValueError as err:
         info = -getattr(err, "errno", 1)
     else:
