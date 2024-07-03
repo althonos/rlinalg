@@ -17,7 +17,6 @@ def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
     such that columns with near-zero norm are moved towards the
     right-hand edge of A.
 
-
     Parameters
     ----------
     a : (M, N) array_like
@@ -40,6 +39,63 @@ def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
         The absolute tolerance to which each column norm is required.
         An column is considered negligible when its norm falls under
         this value.
+
+    Returns
+    -------
+    Q : float or complex ndarray
+        Of shape (M, M), or (M, K) for ``mode='economic'``. Not returned
+        if ``mode='r'``. Replaced by tuple ``(Q, TAU)`` if ``mode='raw'``.
+    R : float or complex ndarray
+        Of shape (M, N), or (K, N) for ``mode in ['economic', 'raw']``.
+        ``K = min(M, N)``.
+    P : int ndarray
+        Of shape (N,).
+
+    Raises
+    ------
+    LinAlgError
+        Raised if decomposition fails
+
+    Notes
+    -----
+    This is an interface to the LAPACK routines dgeqrf, zgeqrf,
+    dorgqr, zungqr, dgeqp3, and zgeqp3.
+
+    If ``mode=economic``, the shapes of Q and R are (M, K) and (K, N) instead
+    of (M,M) and (M,N), with ``K=min(M,N)``.
+
+    Examples
+    --------
+    >>> import numpy
+    >>> import rlinalg
+    >>> rng = numpy.random.default_rng()
+    >>> a = rng.standard_normal((9, 6))
+
+    >>> q, r, p = rlinalg.qr(a)
+    >>> numpy.allclose(a, numpy.dot(q, r))
+    True
+    >>> q.shape, r.shape
+    ((9, 9), (9, 6))
+
+    >>> r2, p2 = rlinalg.qr(a, mode='r')
+    >>> numpy.allclose(r, r2)
+    True
+
+    >>> q3, r3, p3 = rlinalg.qr(a, mode='economic')
+    >>> q3.shape, r3.shape
+    ((9, 6), (6, 6))
+
+    >>> q4, r4, p4 = rlinalg.qr(a)
+    >>> d = numpy.abs(numpy.diag(r4))
+
+    >>> numpy.allclose(a[:, p4], numpy.dot(q4, r4))
+    True
+    >>> q4.shape, r4.shape, p4.shape
+    ((9, 9), (9, 6), (6,))
+
+    >>> q5, r5, p5 = rlinalg.qr(a, mode='economic')
+    >>> q5.shape, r5.shape, p5.shape
+    ((9, 6), (6, 6), (6,))
 
     """
     if mode not in {"full", "qr", "r", "economic", "raw"}:
