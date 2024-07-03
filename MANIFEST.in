@@ -1,5 +1,8 @@
 include COPYING
 include README.md
+include setup.py
+include pyproject.toml
+
 include vendor/r-source/COPYING
 include vendor/r-source/src/appl/*.f
 
