@@ -117,8 +117,9 @@ def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
     overwrite_a = overwrite_a or _datacopied(a1, a)
 
     qr, rank, jpvt, tau, _, _ = linpack.dqrdc2(a1, tol=tol, overwrite_a=overwrite_a)
-    jpvt -= 1
+    jpvt -= 1  # <-- dqrdc2 returns indices that are one-based
 
+    # TODO: Avoid copying data (`numpy.triu` does) if possible?
     if mode not in {"economic", "raw"} or M < N:
         R = numpy.triu(qr)
     else:
