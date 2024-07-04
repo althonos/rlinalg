@@ -20,7 +20,7 @@ pyf_sources = [
 
 linpackmodule = custom_target('_linpackmodule.c',
   input: '_linpack.pyf',
-  output: ['_linpackmodule.c', '_linpack-f2pywrappers.f'],
+  output: '_linpackmodule.c',
   command: [python, '-m', 'numpy.f2py', '@INPUT@', '--build-dir', '@OUTDIR@' ],
   depend_files : ['_dqrdc2.pyf']
 )
