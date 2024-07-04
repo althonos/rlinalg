@@ -1,6 +1,6 @@
 # ®️ `rlinalg` [![Stars](https://img.shields.io/github/stars/althonos/rlinalg.svg?style=social&maxAge=3600&label=Star)](https://github.com/althonos/rlinalg/stargazers)
 
-*Linear Algebra routines as implemented the [R language](https://www.r-project.org/).*
+*Linear Algebra routines as implemented in the [R language](https://www.r-project.org/).*
 
 [![Actions](https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/test.yml?branch=main&logo=github&style=flat-square&maxAge=300)](https://github.com/althonos/rlinalg/actions)
 [![Coverage](https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/rlinalg/)
@@ -26,7 +26,7 @@ manipulation and linear algebra routines are implemented using
 
 However, when trying to port and reproduce code from R in Python, one can
 notice differences in the implementation of several routines, in particular
-in the [$QR$ decomposition](https://en.wikipedia.org/wiki/QR_decomposition)
+in the [QR decomposition](https://en.wikipedia.org/wiki/QR_decomposition)
 with pivoting enabled:
 
 ```r
@@ -65,13 +65,14 @@ array([[-0.1230915  0.904534   0.4082483]
        [-0.8616404 -0.3015113  0.4082483]])
 ```
 
-This library depends on [NumPy], and on the [LAPACK] and [BLAS] libraries shared
-on the system. It is available for all modern Python versions (3.6+).
-Building is done with `fmodpy` and requires a Fortran compiler when compiling
+This library depends on [NumPy], and on the [BLAS] libraries available
+on the system. It is available for all modern Python versions (3.7+).
+Building is done with Meson and requires a Fortran compiler when compiling
 from source.
 
 [`qr`]: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr
 [LAPACK]: https://www.netlib.org/lapack/
+[BLAS]: https://www.netlib.org/blas/
 [LINPACK]: https://netlib.org/linpack/
 [NumPy]: https://numpy.org/
 [SciPy]: https://scipy.org/
@@ -128,7 +129,7 @@ in the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format.
 
 This library is provided under the
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/) or later.
-It includes some code redistributed from the R language , which is licensed under the
+It includes some code redistributed from the R language, which is licensed under the
 [GNU General Public License v2.0](https://choosealicense.com/licenses/gpl-2.0/)
 or later.
 
