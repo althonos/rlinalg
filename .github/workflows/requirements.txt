@@ -1,6 +1,6 @@
 coverage
-fmodpy >=1.0
-numpy
-wheel
-auditwheel
-setuptools >=46.4.0
+numpy >=1.0
+meson-python ~=0.16.0
+meson ~=1.0 ; python_version > '3.6'
+meson ~=0.61.5 ; python_version == '3.6'
+ninja ~=1.8
