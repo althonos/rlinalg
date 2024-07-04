@@ -1,4 +1,15 @@
 [build-system]
-requires = ['setuptools >=46.4', 'fmodpy ~=1.0']
-build-backend = "setuptools.build_meta"
+build-backend = 'mesonpy'
+requires = ['meson-python', 'numpy']
 
+
+[project]
+name = 'rlinalg'
+version = '0.0.1'
+description = 'Linear Algebra routines as implemented the R language'
+readme = 'README.md'
+requires-python = '>=3.6'
+license = {file = 'COPYING'}
+authors = [
+  {name = 'Martin Larralde', email = 'martin.larralde@embl.de'},
+]
