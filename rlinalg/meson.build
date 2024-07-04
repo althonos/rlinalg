@@ -8,3 +8,4 @@ python_sources = [
 python.install_sources(python_sources, subdir: 'rlinalg')
 
 subdir('linpack')
+subdir('tests')
