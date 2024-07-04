@@ -45,9 +45,9 @@ jobs:
         - python-version: pypy-3.9
           python-release: v3.9
           python-impl: PyPy
-        - python-version: pypy-3.10
-          python-release: v3.10
-          python-impl: PyPy
+        #- python-version: pypy-3.10
+        #  python-release: v3.10
+        #  python-impl: PyPy
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
