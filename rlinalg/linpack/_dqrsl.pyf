@@ -1,0 +1,22 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+subroutine dqrsl(x,ldx,n,k,qraux,y,qy,qty,b,rsd,xb,job,info) ! in ../../vendor/r-source/src/appl/dqrsl.f
+    double precision dimension(ldx,*) :: x
+    integer, optional,check(shape(x, 0) == ldx),depend(x) :: ldx=shape(x, 0)
+    integer :: n
+    integer :: k
+    double precision dimension(*) :: qraux
+    double precision dimension(*) :: y
+    double precision dimension(*) :: qy
+    double precision dimension(*) :: qty
+    double precision dimension(*) :: b
+    double precision dimension(*) :: rsd
+    double precision dimension(*) :: xb
+    integer :: job
+    integer :: info
+end subroutine dqrsl
+
+! This file was auto-generated with f2py (version:2.0.0).
+! See:
+! https://web.archive.org/web/20140822061353/http://cens.ioc.ee/projects/f2py2e

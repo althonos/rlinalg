@@ -11,16 +11,16 @@ fortan_sources = [
      '../../vendor/r-source/src/appl/dqrsl.f',
 ]
 
-custom_target('_linpackmodule',
+linpackmodule = custom_target('_linpackmodule.c',
+  input: ['_linpack.pyf', fortan_sources],
   output: ['_linpackmodule.c', '_linpack-f2pywrappers.f'],
-  input: ['_linpack.pyf'] + fortan_sources,
-  command: [python, '-m', 'numpy.f2py', '-m', '_linpack', '@INPUT@' ],
+  command: [python, '-m', 'numpy.f2py', '-c', '@INPUT@', '--build-dir', '@OUTDIR@' ],
 )
 
 python.extension_module('_linpack',
-  fortan_sources + ['_linpackmodule.c'],
-  incdir_f2py / 'fortranobject.c',
+  linpackmodule, fortan_sources, incdir_f2py / 'fortranobject.c',
   include_directories: inc_np,
   dependencies : [py_dep, blas_dep],
-  install : true
+  install: true,
+  subdir: 'linpack',
 )
