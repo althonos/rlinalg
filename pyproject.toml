@@ -4,7 +4,6 @@ requires = ['meson-python', 'numpy >= 1.0']
 
 [project]
 name = 'rlinalg'
-version = '0.0.1'
 description = 'Linear Algebra routines as implemented in the R language'
 readme = 'README.md'
 requires-python = '>=3.6'
@@ -33,10 +32,7 @@ classifiers = [
 dependencies = [
     "numpy >= 1.0"
 ]
-dynamic = "version"
-
-[tool.setuptools.dynamic]
-version = {attr = "rlinalg.__version__"}
+dynamic = ["version"]
 
 [project.urls]
 "Documentation" = "https://rlinalg.readthedocs.io/en/stable/"

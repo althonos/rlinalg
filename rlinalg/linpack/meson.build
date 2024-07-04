@@ -2,7 +2,7 @@ python_sources = [
     '__init__.py',
 ]
 
-python.install_sources(python_sources, subdir: 'rlinalg.linpack')
+python.install_sources(python_sources, subdir : 'rlinalg/linpack')
 
 fortan_sources = [
      '../../vendor/r-source/src/appl/dqrdc2.f',
@@ -22,5 +22,5 @@ python.extension_module('_linpack',
   include_directories: inc_np,
   dependencies : [py_dep, blas_dep],
   install: true,
-  subdir: 'linpack',
+  subdir : 'rlinalg/linpack',
 )
