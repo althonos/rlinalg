@@ -2,11 +2,11 @@
 ! Note: the context of this file is case sensitive.
 
 subroutine dtrco(t,ldt,n,rcond,z,job) ! in ../../vendor/r-source/src/appl/dtrco.f
-    double precision dimension(ldt,*) :: t
+    double precision dimension(ldt,n) :: t
     integer, optional,check(shape(t, 0) == ldt),depend(t) :: ldt=shape(t, 0)
-    integer :: n
-    double precision :: rcond
-    double precision dimension(*) :: z
+    integer, optional,check(shape(t, 1) >= n),depend(t) :: n=shape(t, 1)
+    double precision, intent(out) :: rcond
+    double precision dimension(n),check(shape(z, 0) == n),depend(n),intent(hide,cache) :: z
     integer :: job
 end subroutine dtrco
 
