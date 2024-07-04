@@ -21,7 +21,7 @@ pyf_sources = [
 linpackmodule = custom_target('_linpackmodule.c',
   input: ['_linpack.pyf', fortan_sources],
   output: ['_linpackmodule.c', '_linpack-f2pywrappers.f'],
-  command: [python, '-m', 'numpy.f2py', '-c', '@INPUT@', '--build-dir', '@OUTDIR@' ],
+  command: [python, '-m', 'numpy.f2py', '-m', '_linpack', '@INPUT@', '--build-dir', '@OUTDIR@' ],
   depend_files : ['_dqrdc2.pyf']
 )
 
