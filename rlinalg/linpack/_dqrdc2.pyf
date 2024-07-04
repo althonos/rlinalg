@@ -2,15 +2,15 @@
 ! Note: the context of this file is case sensitive.
 
 subroutine dqrdc2(x,ldx,n,p,tol,k,qraux,jpvt,work) ! in ../../vendor/r-source/src/appl/dqrdc2.f
-    double precision dimension(ldx,*) :: x
-    integer, optional,check(shape(x, 0) == ldx),depend(x) :: ldx=shape(x, 0)
-    integer :: n
-    integer, optional,check(shape(work, 0) == p),depend(work) :: p=shape(work, 0)
-    double precision :: tol
-    integer :: k
-    double precision dimension(*) :: qraux
-    integer dimension(*) :: jpvt
-    double precision dimension(p,2) :: work
+    double precision, dimension(n,p), intent(in,out,out=QR,copy) :: x
+    integer, optional,check(shape(x, 0) == ldx),depend(x),intent(in) :: ldx=shape(x, 0)
+    integer, optional,check(shape(x, 0) == n),depend(x),intent(in) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == p),depend(x),intent(in) :: p=shape(x, 1)
+    double precision, intent(in) :: tol
+    integer, intent(out) :: k
+    double precision,dimension(p),depend(p),intent(out,out=tau) :: qraux
+    integer, dimension(p),depend(p),intent(out,out=P,hide) :: jpvt = _i[0] + 1
+    double precision, dimension(p,2),depend(p),intent(cache,hide) :: work
 end subroutine dqrdc2
 
 ! This file was auto-generated with f2py (version:2.0.0).

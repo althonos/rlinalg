@@ -117,28 +117,28 @@ def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
 
-    qr, rank, jpvt, tau, _, _ = linpack.dqrdc2(a1, tol=tol, overwrite_a=overwrite_a)
-    jpvt -= 1  # <-- dqrdc2 returns indices that are one-based
+    QR, k, tau, P = linpack.dqrdc2(a1, tol=tol, overwrite_x=overwrite_a)
+    P -= 1  # <-- dqrdc2 returns indices that are one-based
 
     # TODO: Avoid copying data (`numpy.triu` does) if possible?
     if mode not in {"economic", "raw"} or M < N:
-        R = numpy.triu(qr)
+        R = numpy.triu(QR)
     else:
-        R = numpy.triu(qr[:N, :])
+        R = numpy.triu(QR[:N, :])
 
     if mode == "r":
-        return R, jpvt
+        return R, P
     elif mode == "raw":
-        return ((qr, tau), R, jpvt)
+        return ((QR, tau), R, P)
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(qr[:, :M], tau, D, overwrite_a=True)
+        Q = linpack.dqrqy(QR[:, :M], tau[:M], D)
     elif mode == "economic":
         D = numpy.eye(M, N, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
+        Q = linpack.dqrqy(QR, tau, D)
     else:
         D = numpy.eye(M, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(qr, tau, D, overwrite_a=True)
+        Q = linpack.dqrqy(QR, tau, D)
 
-    return QRResult(Q, R, jpvt)
+    return QRResult(Q, R, P)
