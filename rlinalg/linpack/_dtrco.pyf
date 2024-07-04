@@ -1,0 +1,15 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+subroutine dtrco(t,ldt,n,rcond,z,job) ! in ../../vendor/r-source/src/appl/dtrco.f
+    double precision dimension(ldt,*) :: t
+    integer, optional,check(shape(t, 0) == ldt),depend(t) :: ldt=shape(t, 0)
+    integer :: n
+    double precision :: rcond
+    double precision dimension(*) :: z
+    integer :: job
+end subroutine dtrco
+
+! This file was auto-generated with f2py (version:2.0.0).
+! See:
+! https://web.archive.org/web/20140822061353/http://cens.ioc.ee/projects/f2py2e

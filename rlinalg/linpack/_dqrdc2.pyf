@@ -1,7 +1,7 @@
 !    -*- f90 -*-
 ! Note: the context of this file is case sensitive.
 
-subroutine dqrdc2(x,ldx,n,p,tol,k,qraux,jpvt,work) ! in :rlinalg/linpack/dqrdc2:vendor/r-source/src/appl/dqrdc2.f
+subroutine dqrdc2(x,ldx,n,p,tol,k,qraux,jpvt,work) ! in ../../vendor/r-source/src/appl/dqrdc2.f
     double precision dimension(ldx,*) :: x
     integer, optional,check(shape(x, 0) == ldx),depend(x) :: ldx=shape(x, 0)
     integer :: n

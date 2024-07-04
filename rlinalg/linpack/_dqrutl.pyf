@@ -1,0 +1,53 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+subroutine dqrqty(x,n,k,qraux,y,ny,qty) ! in ../../vendor/r-source/src/appl/dqrutl.f
+    double precision dimension(n,k) :: x
+    integer, optional,check(shape(x, 0) == n),depend(x) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == k),depend(x) :: k=shape(x, 1)
+    double precision dimension(k),depend(k) :: qraux
+    double precision dimension(n,ny),depend(n) :: y
+    integer, optional,check(shape(y, 1) == ny),depend(y) :: ny=shape(y, 1)
+    double precision dimension(n,ny),depend(n,ny) :: qty
+end subroutine dqrqty
+subroutine dqrqy(x,n,k,qraux,y,ny,qy) ! in ../../vendor/r-source/src/appl/dqrutl.f
+    double precision dimension(n,k) :: x
+    integer, optional,check(shape(x, 0) == n),depend(x) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == k),depend(x) :: k=shape(x, 1)
+    double precision dimension(k),depend(k) :: qraux
+    double precision dimension(n,ny),depend(n) :: y
+    integer, optional,check(shape(y, 1) == ny),depend(y) :: ny=shape(y, 1)
+    double precision dimension(n,ny),depend(n,ny) :: qy
+end subroutine dqrqy
+subroutine dqrcf(x,n,k,qraux,y,ny,b,info) ! in ../../vendor/r-source/src/appl/dqrutl.f
+    double precision dimension(n,k) :: x
+    integer, optional,check(shape(x, 0) == n),depend(x) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == k),depend(x) :: k=shape(x, 1)
+    double precision dimension(k),depend(k) :: qraux
+    double precision dimension(n,ny),depend(n) :: y
+    integer, optional,check(shape(y, 1) == ny),depend(y) :: ny=shape(y, 1)
+    double precision dimension(k,ny),depend(k,ny) :: b
+    integer :: info
+end subroutine dqrcf
+subroutine dqrrsd(x,n,k,qraux,y,ny,rsd) ! in ../../vendor/r-source/src/appl/dqrutl.f
+    double precision dimension(n,k) :: x
+    integer, optional,check(shape(x, 0) == n),depend(x) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == k),depend(x) :: k=shape(x, 1)
+    double precision dimension(k),depend(k) :: qraux
+    double precision dimension(n,ny),depend(n) :: y
+    integer, optional,check(shape(y, 1) == ny),depend(y) :: ny=shape(y, 1)
+    double precision dimension(n,ny),depend(n,ny) :: rsd
+end subroutine dqrrsd
+subroutine dqrxb(x,n,k,qraux,y,ny,xb) ! in ../../vendor/r-source/src/appl/dqrutl.f
+    double precision dimension(n,k) :: x
+    integer, optional,check(shape(x, 0) == n),depend(x) :: n=shape(x, 0)
+    integer, optional,check(shape(x, 1) == k),depend(x) :: k=shape(x, 1)
+    double precision dimension(k),depend(k) :: qraux
+    double precision dimension(n,ny),depend(n) :: y
+    integer, optional,check(shape(y, 1) == ny),depend(y) :: ny=shape(y, 1)
+    double precision dimension(n,ny),depend(n,ny) :: xb
+end subroutine dqrxb
+
+! This file was auto-generated with f2py (version:2.0.0).
+! See:
+! https://web.archive.org/web/20140822061353/http://cens.ioc.ee/projects/f2py2e
