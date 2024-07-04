@@ -1,15 +1,47 @@
 [build-system]
 build-backend = 'mesonpy'
-requires = ['meson-python', 'numpy']
-
+requires = ['meson-python', 'numpy >= 1.0']
 
 [project]
 name = 'rlinalg'
 version = '0.0.1'
-description = 'Linear Algebra routines as implemented the R language'
+description = 'Linear Algebra routines as implemented in the R language'
 readme = 'README.md'
 requires-python = '>=3.6'
 license = {file = 'COPYING'}
 authors = [
   {name = 'Martin Larralde', email = 'martin.larralde@embl.de'},
 ]
+keywords = ["linalg", "linear algebra", "qr", "linpack", "R"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Fortran",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy >= 1.0"
+]
+dynamic = "version"
+
+[tool.setuptools.dynamic]
+version = {attr = "rlinalg.__version__"}
+
+[project.urls]
+"Documentation" = "https://rlinalg.readthedocs.io/en/stable/"
+"Bug Tracker" = "https://github.com/althonos/rlinalg/issues"
+"Changelog" = "https://github.com/althonos/rlinalg/blob/master/CHANGELOG.md"
+"Coverage" = "https://codecov.io/gh/althonos/rlinalg/"
+"Builds" = "https://github.com/althonos/rlinalg/actions"
+"PyPI" = "https://pypi.org/project/rlinalg"

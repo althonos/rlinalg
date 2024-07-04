@@ -1,7 +1,6 @@
 project(
     'rlinalg', 
     'c',
-    version: '0.0.1'
 )
 
 add_languages('fortran')
