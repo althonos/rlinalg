@@ -6,11 +6,12 @@ import numpy.testing
 from numpy.testing import (
     assert_equal,
     assert_allclose,
+    assert_array_equal,
     assert_array_almost_equal,
     assert_,
 )
 
-from rlinalg import qr
+from rlinalg import qr, qr_multiply
 
 
 class TestQR(unittest.TestCase):
@@ -23,23 +24,39 @@ class TestQR(unittest.TestCase):
 
     def test_simple_left(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
-        q, r, _, _ = qr(a)
+        q, r, *_ = qr(a)
         c = [1, 2, 3]
-        # qc, r2 = qr_multiply(a, c, "left")
-        # assert_array_almost_equal(q @ c, qc)
-        # assert_array_almost_equal(r, r2)
-        # qc, r2 = qr_multiply(a, numpy.eye(3), "left")
-        # assert_array_almost_equal(q, qc)
+        qc, r2, *_ = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c, qc)
+        assert_array_almost_equal(r, r2)
+        qc, r2, *_ = qr_multiply(a, numpy.eye(3), "left")
+        assert_array_almost_equal(q, qc)
+        # FIXME: this should work!
+        # cq, r, *_ = qr_multiply(a, numpy.ones((3,5)), "left")
+        # assert_array_almost_equal(cq, q @ numpy.eye(3, 5))
 
     def test_simple_right(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
-        q, r, _, _ = qr(a)
+        q, r, *_ = qr(a)
         c = [1, 2, 3]
-        # qc, r2 = qr_multiply(a, c)
-        # assert_array_almost_equal(c @ q, qc)
-        # assert_array_almost_equal(r, r2)
-        # qc, r = qr_multiply(a, numpy.eye(3))
-        # assert_array_almost_equal(q, qc)
+        qc, r2, *_ = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, qc)
+        assert_array_almost_equal(r, r2)
+        qc, r, *_ = qr_multiply(a, numpy.eye(3))
+        assert_array_almost_equal(q, qc)
+
+        c = numpy.arange(15).reshape(5, 3)
+        qc, r, *_ = qr_multiply(a, c)
+        self.assertEqual(qc.shape, (5, 3))
+        assert_array_almost_equal(qc, c @ q)
+
+        with self.assertRaises(ValueError):
+            c = numpy.arange(20).reshape(5, 4)
+            qc, r, *_ = qr_multiply(a, c)
+
+        with self.assertRaises(ValueError):
+            c = numpy.arange(4)
+            qc, r, *_ = qr_multiply(a, c)
 
     def test_simple_pivoting(self):
         a = numpy.asarray([[8, 2, 3], [2, 9, 3], [5, 3, 6]])
@@ -56,15 +73,15 @@ class TestQR(unittest.TestCase):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
         q, r, p, _ = qr(a)
         c = [1, 2, 3]
-        # qc, r, jpvt = qr_multiply(a, c, "left", True)
-        # assert_array_almost_equal(q @ c, qc)
+        qc, r, jpvt, rank = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c, qc)
 
     def test_simple_right_pivoting(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
-        q, r, p, _ = qr(a)
-        # c = [1, 2, 3]
-        # qc, r, jpvt = qr_multiply(a, c)
-        # assert_array_almost_equal(c @ q, qc)
+        q, r, p, rank = qr(a)
+        c = [1, 2, 3]
+        qc, r, jpvt, rank = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, qc)
 
     def test_simple_trap(self):
         a = [[8, 2, 3], [2, 9, 3]]
@@ -123,47 +140,54 @@ class TestQR(unittest.TestCase):
         assert_array_almost_equal(q, q2)
         assert_array_almost_equal(r, r2)
 
-    # def test_simple_tall_left(self):
-    #     a = [[8, 2], [2, 9], [5, 3]]
-    #     q, r, p = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     qc, r2 = qr_multiply(a, c, "left")
-    #     assert_array_almost_equal(q @ c, qc)
-    #     assert_array_almost_equal(r, r2)
-    #     c = array([1, 2, 0])
-    #     qc, r2 = qr_multiply(a, c, "left", overwrite_c=True)
-    #     assert_array_almost_equal(q @ c[:2], qc)
-    #     qc, r = qr_multiply(a, numpy.eye(2), "left")
-    #     assert_array_almost_equal(qc, q)
+    def test_simple_tall_left(self):
+        a = [[8, 2], [2, 9], [5, 3]]
+        q, r, p, _ = qr(a, mode="economic")
+        c = [1, 2]
+        qc, r2, p2, _ = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c, qc)
+        assert_array_almost_equal(r, r2)
+        c = numpy.array([1, 2, 0])
+        qc, r2, p2, _ = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c[:2], qc)
+        qc, r, p, rank = qr_multiply(a, numpy.eye(2), "left")
+        assert_array_almost_equal(qc, q)
 
-    # def test_simple_tall_left_pivoting(self):
-    #     a = [[8, 2], [2, 9], [5, 3]]
-    #     q, r, jpvt = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     qc, r, kpvt = qr_multiply(a, c, "left", True)
-    #     assert_array_equal(jpvt, kpvt)
-    #     assert_array_almost_equal(q @ c, qc)
-    #     qc, r, jpvt = qr_multiply(a, numpy.eye(2), "left", True)
-    #     assert_array_almost_equal(qc, q)
+    def test_simple_tall_left_pivoting(self):
+        a = [[8, 2], [2, 9], [5, 3]]
+        q, r, jpvt, rank = qr(a, mode="economic")
+        c = [1, 2]
+        qc, r, kpvt, rank = qr_multiply(a, c, "left")
+        assert_array_equal(jpvt, kpvt)
+        assert_array_almost_equal(q @ c, qc)
+        qc, r, jpvt, rank = qr_multiply(a, numpy.eye(2), "left")
+        assert_array_almost_equal(qc, q)
 
-    # def test_simple_tall_right(self):
-    #     a = [[8, 2], [2, 9], [5, 3]]
-    #     q, r, p = qr(a, mode="economic")
-    #     c = [1, 2, 3]
-    #     cq, r2 = qr_multiply(a, c)
-    #     assert_array_almost_equal(c @ q, cq)
-    #     assert_array_almost_equal(r, r2)
-    #     cq, r, p = qr_multiply(a, numpy.eye(3))
-    #     assert_array_almost_equal(cq, q)
+    def test_shapes(self):
+        a = [[8, 2], [2, 9], [5, 3]]
+        q2, _, _, _ = qr(a, mode="full")
+        self.assertEqual(q2.shape, (3, 3))
+        q1, _, _, _ = qr(a, mode="economic")
+        self.assertEqual(q1.shape, (3, 2))
 
-    # def test_simple_tall_right_pivoting(self):
-    #     a = [[8, 2], [2, 9], [5, 3]]
-    #     q, r, jpvt = qr(a, mode="economic")
-    #     c = [1, 2, 3]
-    #     cq, r, jpvt = qr_multiply(a, c)
-    #     assert_array_almost_equal(c @ q, cq)
-    #     cq, r, jpvt = qr_multiply(a, numpy.eye(3))
-    #     assert_array_almost_equal(cq, q)
+    def test_simple_tall_right(self):
+        a = [[8, 2], [2, 9], [5, 3]]
+        q, r, p, _ = qr(a, mode="economic")
+        c = [1, 2, 3]
+        cq, r2, p2, _ = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, cq)
+        assert_array_almost_equal(r, r2)
+        cq, r, p, _ = qr_multiply(a, numpy.eye(3))
+        assert_array_almost_equal(cq, q)
+
+    def test_simple_tall_right_pivoting(self):
+        a = [[8, 2], [2, 9], [5, 3]]
+        q, r, jpvt, rank = qr(a, mode="economic")
+        c = [1, 2, 3]
+        cq, r, jpvt, rank = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, cq)
+        cq, r, jpvt, rank = qr_multiply(a, numpy.eye(3))
+        assert_array_almost_equal(cq, q)
 
     def test_simple_fat(self):
         # full version
@@ -211,88 +235,88 @@ class TestQR(unittest.TestCase):
         assert_array_almost_equal(q, q2)
         assert_array_almost_equal(r, r2)
 
-    # def test_simple_fat_left(self):
-    #     a = [[8, 2, 3], [2, 9, 5]]
-    #     q, r, p = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     qc, r2 = qr_multiply(a, c, "left")
-    #     assert_array_almost_equal(q @ c, qc)
-    #     assert_array_almost_equal(r, r2)
-    #     qc, r = qr_multiply(a, numpy.eye(2), "left")
-    #     assert_array_almost_equal(qc, q)
+    def test_simple_fat_left(self):
+        a = [[8, 2, 3], [2, 9, 5]]
+        q, r, p, _ = qr(a, mode="economic")
+        c = [1, 2]
+        qc, r2, p2, _ = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c, qc)
+        assert_array_almost_equal(r, r2)
+        qc, r, p, rank = qr_multiply(a, numpy.eye(2), "left")
+        assert_array_almost_equal(qc, q)
 
-    # def test_simple_fat_left_pivoting(self):
-    #     a = [[8, 2, 3], [2, 9, 5]]
-    #     q, r, jpvt = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     qc, r, jpvt = qr_multiply(a, c, "left", True)
-    #     assert_array_almost_equal(q @ c, qc)
-    #     qc, r, jpvt = qr_multiply(a, numpy.eye(2), "left", True)
-    #     assert_array_almost_equal(qc, q)
+    def test_simple_fat_left_pivoting(self):
+        a = [[8, 2, 3], [2, 9, 5]]
+        q, r, jpvt, rank = qr(a, mode="economic")
+        c = [1, 2]
+        qc, r, jpvt, rank = qr_multiply(a, c, "left")
+        assert_array_almost_equal(q @ c, qc)
+        qc, r, jpvt, rank = qr_multiply(a, numpy.eye(2), "left")
+        assert_array_almost_equal(qc, q)
 
-    # def test_simple_fat_right(self):
-    #     a = [[8, 2, 3], [2, 9, 5]]
-    #     q, r, p = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     cq, r2 = qr_multiply(a, c)
-    #     assert_array_almost_equal(c @ q, cq)
-    #     assert_array_almost_equal(r, r2)
-    #     cq, r, p = qr_multiply(a, numpy.eye(2))
-    #     assert_array_almost_equal(cq, q)
+    def test_simple_fat_right(self):
+        a = [[8, 2, 3], [2, 9, 5]]
+        q, r, p, _ = qr(a, mode="economic")
+        c = [1, 2]
+        cq, r2, p2, _ = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, cq)
+        assert_array_almost_equal(r, r2)
+        cq, r, p, _ = qr_multiply(a, numpy.eye(2))
+        assert_array_almost_equal(cq, q)
 
-    # def test_simple_fat_right_pivoting(self):
-    #     a = [[8, 2, 3], [2, 9, 5]]
-    #     q, r, jpvt = qr(a, mode="economic")
-    #     c = [1, 2]
-    #     cq, r, jpvt = qr_multiply(a, c)
-    #     assert_array_almost_equal(c @ q, cq)
-    #     cq, r, jpvt = qr_multiply(a, numpy.eye(2))
-    #     assert_array_almost_equal(cq, q)
+    def test_simple_fat_right_pivoting(self):
+        a = [[8, 2, 3], [2, 9, 5]]
+        q, r, jpvt, rank = qr(a, mode="economic")
+        c = [1, 2]
+        cq, r, jpvt, rank = qr_multiply(a, c)
+        assert_array_almost_equal(c @ q, cq)
+        cq, r, jpvt, rank = qr_multiply(a, numpy.eye(2))
+        assert_array_almost_equal(cq, q)
 
     def test_random(self):
         rng = numpy.random.RandomState(1234)
         n = 20
         for k in range(2):
             a = rng.random([n, n])
-            q, r, p, _ = qr(a)
+            q, r, p, rank = qr(a)
             assert_array_almost_equal(q.T @ q, numpy.eye(n))
             assert_array_almost_equal(q @ r, a)
 
-    # def test_random_left(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     n = 20
-    #     for k in range(2):
-    #         a = rng.random([n, n])
-    #         q, r, p = qr(a)
-    #         c = rng.random([n])
-    #         qc, r = qr_multiply(a, c, "left")
-    #         assert_array_almost_equal(q @ c, qc)
-    #         qc, r = qr_multiply(a, numpy.eye(n), "left")
-    #         assert_array_almost_equal(q, qc)
+    def test_random_left(self):
+        rng = numpy.random.RandomState(1234)
+        n = 20
+        for k in range(2):
+            a = rng.random([n, n])
+            q, r, p, rank = qr(a)
+            c = rng.random([n])
+            qc, r, p, rank = qr_multiply(a, c, "left")
+            assert_array_almost_equal(q @ c, qc)
+            qc, r, p, rank = qr_multiply(a, numpy.eye(n), "left")
+            assert_array_almost_equal(q, qc)
 
-    # def test_random_right(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     n = 20
-    #     for k in range(2):
-    #         a = rng.random([n, n])
-    #         q, r, p = qr(a)
-    #         c = rng.random([n])
-    #         cq, r, p = qr_multiply(a, c)
-    #         assert_array_almost_equal(c @ q, cq)
-    #         cq, r, p = qr_multiply(a, numpy.eye(n))
-    #         assert_array_almost_equal(q, cq)
+    def test_random_right(self):
+        rng = numpy.random.RandomState(1234)
+        n = 20
+        for k in range(2):
+            a = rng.random([n, n])
+            q, r, p, rank = qr(a)
+            c = rng.random([n])
+            cq, r, p, rank = qr_multiply(a, c)
+            assert_array_almost_equal(c @ q, cq)
+            cq, r, p, rank = qr_multiply(a, numpy.eye(n))
+            assert_array_almost_equal(q, cq)
 
     def test_random_pivoting(self):
         rng = numpy.random.RandomState(1234)
         n = 20
         for k in range(2):
             a = rng.random([n, n])
-            q, r, p, _ = qr(a)
+            q, r, p, rank = qr(a)
             # d = abs(numpy.diag(r))
             # assert_(numpy.all(d[1:] <= d[:-1]))
             assert_array_almost_equal(q.T @ q, numpy.eye(n))
             assert_array_almost_equal(q @ r, a[:, p])
-            q2, r2, p2, _ = qr(a[:, p])
+            q2, r2, p2, rank = qr(a[:, p])
             assert_array_almost_equal(q, q2)
             assert_array_almost_equal(r, r2)
 
@@ -307,33 +331,33 @@ class TestQR(unittest.TestCase):
             assert_array_almost_equal(q.T @ q, numpy.eye(m))
             assert_array_almost_equal(q @ r, a)
 
-    # def test_random_tall_left(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     # full version
-    #     m = 200
-    #     n = 100
-    #     for k in range(2):
-    #         a = rng.random([m, n])
-    #         q, r, p = qr(a, mode="economic")
-    #         c = rng.random([n])
-    #         qc, r = qr_multiply(a, c, "left")
-    #         assert_array_almost_equal(q @ c, qc)
-    #         qc, r = qr_multiply(a, numpy.eye(n), "left")
-    #         assert_array_almost_equal(qc, q)
+    def test_random_tall_left(self):
+        rng = numpy.random.RandomState(1234)
+        # full version
+        m = 200
+        n = 100
+        for k in range(2):
+            a = rng.random([m, n])
+            q, r, p, _ = qr(a, mode="economic")
+            c = rng.random([n])
+            qc, r, p, rank = qr_multiply(a, c, "left")
+            assert_array_almost_equal(q @ c, qc)
+            qc, r, p, rank = qr_multiply(a, numpy.eye(n), "left")
+            assert_array_almost_equal(qc, q)
 
-    # def test_random_tall_right(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     # full version
-    #     m = 200
-    #     n = 100
-    #     for k in range(2):
-    #         a = rng.random([m, n])
-    #         q, r, p = qr(a, mode="economic")
-    #         c = rng.random([m])
-    #         cq, r, p = qr_multiply(a, c)
-    #         assert_array_almost_equal(c @ q, cq)
-    #         cq, r, p = qr_multiply(a, numpy.eye(m))
-    #         assert_array_almost_equal(cq, q)
+    def test_random_tall_right(self):
+        rng = numpy.random.RandomState(1234)
+        # full version
+        m = 200
+        n = 100
+        for k in range(2):
+            a = rng.random([m, n])
+            q, r, p, _ = qr(a, mode="economic")
+            c = rng.random([m])
+            cq, r, p, _ = qr_multiply(a, c)
+            assert_array_almost_equal(c @ q, cq)
+            cq, r, p, _ = qr_multiply(a, numpy.eye(m))
+            assert_array_almost_equal(cq, q)
 
     def test_random_tall_pivoting(self):
         rng = numpy.random.RandomState(1234)
@@ -351,36 +375,34 @@ class TestQR(unittest.TestCase):
             assert_array_almost_equal(q, q2)
             assert_array_almost_equal(r, r2)
 
-    # def test_random_tall_e(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     # economy version
-    #     m = 200
-    #     n = 100
-    #     for k in range(2):
-    #         a = rng.random([m, n])
-    #         q, r, p = qr(a, mode='economic')
-    #         assert_array_almost_equal(q.T @ q, numpy.eye(n))
-    #         assert_array_almost_equal(q @ r, a)
-    #         assert_equal(q.shape, (m, n))
-    #         assert_equal(r.shape, (n, n))
+    def test_random_tall_e(self):
+        rng = numpy.random.RandomState(1234)
+        # economy version
+        m = 200
+        n = 100
+        for k in range(2):
+            a = rng.random([m, n])
+            q, r, p, _ = qr(a, mode='economic')
+            assert_array_almost_equal(q.T @ q, numpy.eye(n))
+            assert_array_almost_equal(q @ r, a)
+            assert_equal(q.shape, (m, n))
+            assert_equal(r.shape, (n, n))
 
-    # def test_random_tall_e_pivoting(self):
-    #     rng = numpy.random.RandomState(1234)
-    #     # economy version pivoting
-    #     m = 200
-    #     n = 100
-    #     for k in range(2):
-    #         a = rng.random([m, n])
-    #         q, r, p = qr(a, mode='economic')
-    #         d = abs(numpy.diag(r))
-    #         assert_(numpy.all(d[1:] <= d[:-1]))
-    #         assert_array_almost_equal(q.T @ q, numpy.eye(n))
-    #         assert_array_almost_equal(q @ r, a[:, p])
-    #         assert_equal(q.shape, (m, n))
-    #         assert_equal(r.shape, (n, n))
-    #         q2, r2, p2 = qr(a[:, p], mode='economic')
-    #         assert_array_almost_equal(q, q2)
-    #         assert_array_almost_equal(r, r2)
+    def test_random_tall_e_pivoting(self):
+        rng = numpy.random.RandomState(1234)
+        # economy version pivoting
+        m = 200
+        n = 100
+        for k in range(2):
+            a = rng.random([m, n])
+            q, r, p, _ = qr(a, mode='economic')
+            assert_array_almost_equal(q.T @ q, numpy.eye(n))
+            assert_array_almost_equal(q @ r, a[:, p])
+            assert_equal(q.shape, (m, n))
+            assert_equal(r.shape, (n, n))
+            q2, r2, p2, _ = qr(a[:, p], mode='economic')
+            assert_array_almost_equal(q, q2)
+            assert_array_almost_equal(r, r2)
 
     def test_random_trap(self):
         rng = numpy.random.RandomState(1234)
@@ -412,30 +434,6 @@ class TestQR(unittest.TestCase):
         q, r, p, _ = qr(a, check_finite=False)
         assert_array_almost_equal(q.T @ q, numpy.eye(3))
         assert_array_almost_equal(q @ r, a)
-
-    # def test_lwork(self):
-    #     a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
-    #     # Get comparison values
-    #     q, r, p = qr(a, lwork=None)
-
-    #     # Test against minimum valid lwork
-    #     q2, r2, p2 = qr(a, lwork=3)
-    #     assert_array_almost_equal(q2, q)
-    #     assert_array_almost_equal(r2, r)
-
-    #     # Test against larger lwork
-    #     q3, r3 = qr(a, lwork=10)
-    #     assert_array_almost_equal(q3, q)
-    #     assert_array_almost_equal(r3, r)
-
-    #     # Test against explicit lwork=-1
-    #     q4, r4 = qr(a, lwork=-1)
-    #     assert_array_almost_equal(q4, q)
-    #     assert_array_almost_equal(r4, r)
-
-    #     # Test against invalid lwork
-    #     assert_raises(Exception, qr, (a,), {'lwork': 0})
-    #     assert_raises(Exception, qr, (a,), {'lwork': 2})
 
     # @pytest.mark.parametrize("m", [0, 1, 2])
     # @pytest.mark.parametrize("n", [0, 1, 2])
@@ -520,18 +518,18 @@ class TestQR(unittest.TestCase):
             assert_allclose(r, numpy.empty((k, n)))
             self.assertEqual(rank, 0)
 
-    # def test_multiply_empty(self):
-    #     a = numpy.empty((0, 0))
-    #     c = numpy.empty((0, 0))
-    #     cq, r, p = qr_multiply(a, c)
-    #     assert_allclose(cq, numpy.empty((0, 0)))
+    def test_multiply_empty(self):
+        a = numpy.empty((0, 0))
+        c = numpy.empty((0, 0))
+        cq, r, p, rank = qr_multiply(a, c)
+        assert_allclose(cq, numpy.empty((0, 0)))
 
-    #     a = numpy.empty((0, 2))
-    #     c = numpy.empty((2, 0))
-    #     cq, r, p = qr_multiply(a, c)
-    #     assert_allclose(cq, numpy.empty((2, 0)))
+        a = numpy.empty((0, 2))
+        c = numpy.empty((2, 0))
+        cq, r, p, rank = qr_multiply(a, c)
+        assert_allclose(cq, numpy.empty((2, 0)))
 
-    #     a = numpy.empty((2, 0))
-    #     c = numpy.empty((0, 2))
-    #     cq, r, p = qr_multiply(a, c)
-    #     assert_allclose(cq, numpy.empty((0, 2)))
+        a = numpy.empty((2, 0))
+        c = numpy.empty((0, 2))
+        cq, r, p, rank = qr_multiply(a, c)
+        assert_allclose(cq, numpy.empty((0, 2)))

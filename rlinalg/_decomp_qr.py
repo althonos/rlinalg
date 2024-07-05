@@ -9,7 +9,7 @@ QRResult = collections.namedtuple("QRResult", "Q R P rank")
 
 
 @set_module("rlinalg")
-def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
+def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     """
     Compute QR decomposition of a matrix.
 
@@ -154,3 +154,42 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k)
 
     return QRResult(Q, R, P, k)
+
+
+def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=False):
+
+    if mode not in {"right", "left"}:
+        raise ValueError("Mode argument should be one of ['right', 'left']")
+    
+    (QR, tau), R, P, k = qr(a, mode="raw", tol=tol, check_finite=check_finite, overwrite_a=overwrite_a)
+    M, N = QR.shape
+
+    asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
+    c1 = asarray(c, order="F" if mode == "left" else "C", dtype=numpy.double)
+    vector = c1.ndim == 1
+
+    if QR.size == 0:
+        return numpy.empty_like(c1), R, P, k
+
+    if mode == "left":
+        # FIXME: check if padding is really necessary here?
+        if c1.shape[0] < M:
+            c1 = numpy.pad(c1, (0, M - c1.shape[0]))
+        # compute QC = Q @ c
+        if vector:
+            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, 0]
+        else:
+            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :k]
+
+    elif vector:
+        # compute QC = c @ Q with c of dim (1,M)
+        if c1.shape[0] != QR.shape[0]:
+            raise ValueError(f"Array shapes are not compatible for c @ Q operation: {(1, c1.shape[0])} vs {QR.shape}")
+        QC = linpack.dqrqty(QR[:, :k], tau[:k], c1[:M], k=k).T[0, :k]
+    else:         
+        # compute QC = c @ Q with c of dim (*,M)
+        if c1.shape[1] != QR.shape[0]:
+            raise ValueError(f"Array shapes are not compatible for c @ Q operation: {c1.shape} vs {QR.shape}")
+        QC = linpack.dqrqty(QR[:, :k], tau[:k], c1.T[:M], k=k).T[:, :k]
+
+    return QC, R, P, k
