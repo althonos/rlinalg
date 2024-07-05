@@ -88,7 +88,7 @@ def kappa(
     M, N = a1.shape
 
     if method == "qr" or M != N:
-        R, P = qr(
+        R, P, rank = qr(
             a1.T if M < N else a1, mode="r", overwrite_a=overwrite_a, check_finite=False
         )
         R = R[: min(M, N)]

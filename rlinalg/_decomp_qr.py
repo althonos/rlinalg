@@ -5,7 +5,7 @@ from . import linpack
 from ._misc import _datacopied, set_module
 
 
-QRResult = collections.namedtuple("QRResult", "Q R P")
+QRResult = collections.namedtuple("QRResult", "Q R P rank")
 
 
 @set_module("rlinalg")
@@ -51,6 +51,8 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         ``K = min(M, N)``.
     P : int ndarray
         Of shape (N,). The column permutation.
+    rank : int
+        The rank of the matrix
 
     Notes
     -----
@@ -66,21 +68,21 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
     >>> rng = numpy.random.default_rng()
     >>> a = rng.standard_normal((9, 6))
 
-    >>> q, r, p = rlinalg.qr(a)
+    >>> q, r, p, k = rlinalg.qr(a)
     >>> numpy.allclose(a, numpy.dot(q, r))
     True
     >>> q.shape, r.shape
     ((9, 9), (9, 6))
 
-    >>> r2, p2 = rlinalg.qr(a, mode='r')
+    >>> r2, p2, rank = rlinalg.qr(a, mode='r')
     >>> numpy.allclose(r, r2)
     True
 
-    >>> q3, r3, p3 = rlinalg.qr(a, mode='economic')
+    >>> q3, r3, p3, rank = rlinalg.qr(a, mode='economic')
     >>> q3.shape, r3.shape
     ((9, 6), (6, 6))
 
-    >>> q4, r4, p4 = rlinalg.qr(a)
+    >>> q4, r4, p4, rank = rlinalg.qr(a)
     >>> d = numpy.abs(numpy.diag(r4))
 
     >>> numpy.allclose(a[:, p4], numpy.dot(q4, r4))
@@ -88,7 +90,7 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
     >>> q4.shape, r4.shape, p4.shape
     ((9, 9), (9, 6), (6,))
 
-    >>> q5, r5, p5 = rlinalg.qr(a, mode='economic')
+    >>> q5, r5, p5, rank = rlinalg.qr(a, mode='economic')
     >>> q5.shape, r5.shape, p5.shape
     ((9, 6), (6, 6), (6,))
 
@@ -118,12 +120,12 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         R = R
         P = numpy.arange(N, dtype=numpy.int32)
         if mode == 'r':
-            return R, P
+            return R, P, 0
         elif mode == 'raw':
             QR = numpy.empty_like(a1, shape=(M, N))
             tau = numpy.zeros_like(a1, shape=(K,))
-            return ((QR, tau), R, P)
-        return QRResult(Q, R, P)
+            return ((QR, tau), R, P, 0)
+        return QRResult(Q, R, P, 0)
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
 
@@ -137,9 +139,9 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         R = numpy.triu(QR[:N, :])
 
     if mode == "r":
-        return R, P
+        return R, P, k
     elif mode == "raw":
-        return ((QR, tau), R, P)
+        return ((QR, tau), R, P, k)
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
@@ -151,4 +153,4 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         D = numpy.eye(M, dtype=numpy.double, order="F")
         Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k)
 
-    return QRResult(Q, R, P)
+    return QRResult(Q, R, P, k)
