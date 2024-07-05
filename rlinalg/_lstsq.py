@@ -37,7 +37,7 @@ def lstsq(a, b, tol = 1e-7, overwrite_a=False, check_finite=True):
             residues = np.empty((0,))
         return x, residues, 0
 
-    qr, x, residues, qty, rank, jpvt, tau = linpack.dqrls(
+    qr, x, residues, _, rank, jpvt, _ = linpack.dqrls(
         x=a1, 
         y=b,
         tol=tol, 
@@ -45,7 +45,6 @@ def lstsq(a, b, tol = 1e-7, overwrite_a=False, check_finite=True):
     )
 
     rp = jpvt.argsort()
-    
     x = x[rp]
 
     if vector:

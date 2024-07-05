@@ -1,3 +1,4 @@
+import itertools
 import unittest
 
 import numpy
@@ -61,164 +62,85 @@ class TestLstsq(unittest.TestCase):
     # @pytest.mark.parametrize("n", (20, 200))
     # @pytest.mark.parametrize("lapack_driver", lapack_drivers)
     # @pytest.mark.parametrize("overwrite", (True, False))
-    # def test_random_exact(self, dtype, n, lapack_driver, overwrite):
-    #     rng = np.random.RandomState(1234)
+    def test_random_exact(self):
+        rng = numpy.random.RandomState(1234)
+        for n in (20, 200):
+            for overwrite in (True, False):
+                a = numpy.asarray(rng.random([n, n]), dtype=numpy.double)
+                for i in range(n):
+                    a[i, i] = 20 * (0.1 + a[i, i])
+                for i in range(4):
+                    b = numpy.asarray(rng.random([n, 3]), dtype=numpy.double)
+                    # Store values in case they are overwritten later
+                    a1 = a.copy()
+                    b1 = b.copy()
+                    out = lstsq(a1, b1, overwrite_a=overwrite)
+                    x = out[0]
+                    r = out[2]
+                    self.assertEqual(r, n, f'expected efficient rank {n}, got {r}')
+                    assert_allclose(numpy.dot(a, x), b, atol=1e-7)
 
-    #     a = np.asarray(rng.random([n, n]), dtype=dtype)
-    #     for i in range(n):
-    #         a[i, i] = 20 * (0.1 + a[i, i])
-    #     for i in range(4):
-    #         b = np.asarray(rng.random([n, 3]), dtype=dtype)
-    #         # Store values in case they are overwritten later
-    #         a1 = a.copy()
-    #         b1 = b.copy()
-    #         out = lstsq(a1, b1,
-    #                     lapack_driver=lapack_driver,
-    #                     overwrite_a=overwrite,
-    #                     overwrite_b=overwrite)
-    #         x = out[0]
-    #         r = out[2]
-    #         assert_(r == n, f'expected efficient rank {n}, '
-    #                 f'got {r}')
-    #         if dtype is np.float32:
-    #             assert_allclose(
-    #                       dot(a, x), b,
-    #                       rtol=500 * _eps_cast(a1.dtype),
-    #                       atol=500 * _eps_cast(a1.dtype),
-    #                       err_msg=f"driver: {lapack_driver}")
-    #         else:
-    #             assert_allclose(
-    #                       dot(a, x), b,
-    #                       rtol=1000 * _eps_cast(a1.dtype),
-    #                       atol=1000 * _eps_cast(a1.dtype),
-    #                       err_msg=f"driver: {lapack_driver}")
+    def test_random_overdet(self):
+        rng = numpy.random.RandomState(1234)
+        for (n, m) in ((20, 15), (200, 2)):
+            for overwrite in (True, False):
+                a = numpy.asarray(rng.random([n, m]), dtype=numpy.double)
+                for i in range(m):
+                    a[i, i] = 20 * (0.1 + a[i, i])
+                for i in range(4):
+                    b = numpy.asarray(rng.random([n, 3]), dtype=numpy.double)
+                    # Store values in case they are overwritten later
+                    a1 = a.copy()
+                    b1 = b.copy()
+                    out = lstsq(a1, b1, overwrite_a=overwrite)
+                    x = out[0]
+                    r = out[2]
+                    self.assertEqual(r, m, f'expected efficient rank {m}, got {r}')
+                    assert_allclose(x, numpy.linalg.lstsq(a, b)[0], atol=1e-7)
 
-    # @pytest.mark.skipif(IS_MUSL, reason="may segfault on Alpine, see gh-17630")
-    # @pytest.mark.parametrize("dtype", COMPLEX_DTYPES)
-    # @pytest.mark.parametrize("n", (20, 200))
-    # @pytest.mark.parametrize("lapack_driver", lapack_drivers)
-    # @pytest.mark.parametrize("overwrite", (True, False))
-    # def test_random_complex_exact(self, dtype, n, lapack_driver, overwrite):
-    #     rng = np.random.RandomState(1234)
+    def test_random_underdet(self):
+        rng = numpy.random.RandomState(1234)
+        for (n, m) in ((15, 20), (2, 200)):
+            for overwrite in (True, False):
+                a = numpy.asarray(rng.random([n, m]), dtype=numpy.double)
+                for i in range(n):
+                    a[i, i] = 20 * (0.1 + a[i, i])
+                for i in range(4):
+                    b = numpy.asarray(rng.random([n, 3]), dtype=numpy.double)
+                    # Store values in case they are overwritten later
+                    a1 = a.copy()
+                    b1 = b.copy()
+                    out = lstsq(a1, b1, overwrite_a=overwrite)
+                    x = out[0]
+                    r = out[2]
+                    self.assertEqual(r, n, f'expected efficient rank {m}, got {r}')
+                    assert_allclose( x[r:], 0.0, atol=1e-7)
+                    assert_allclose(numpy.dot(a, x), b, atol=1e-7)
 
-    #     a = np.asarray(rng.random([n, n]) + 1j*rng.random([n, n]),
-    #                    dtype=dtype)
-    #     for i in range(n):
-    #         a[i, i] = 20 * (0.1 + a[i, i])
-    #     for i in range(2):
-    #         b = np.asarray(rng.random([n, 3]), dtype=dtype)
-    #         # Store values in case they are overwritten later
-    #         a1 = a.copy()
-    #         b1 = b.copy()
-    #         out = lstsq(a1, b1, lapack_driver=lapack_driver,
-    #                     overwrite_a=overwrite,
-    #                     overwrite_b=overwrite)
-    #         x = out[0]
-    #         r = out[2]
-    #         assert_(r == n, f'expected efficient rank {n}, '
-    #                 f'got {r}')
-    #         if dtype is np.complex64:
-    #             assert_allclose(
-    #                       dot(a, x), b,
-    #                       rtol=400 * _eps_cast(a1.dtype),
-    #                       atol=400 * _eps_cast(a1.dtype),
-    #                       err_msg=f"driver: {lapack_driver}")
-    #         else:
-    #             assert_allclose(
-    #                       dot(a, x), b,
-    #                       rtol=1000 * _eps_cast(a1.dtype),
-    #                       atol=1000 * _eps_cast(a1.dtype),
-    #                       err_msg=f"driver: {lapack_driver}")
+    def test_check_finite(self):
+        # with suppress_warnings() as sup:
+        #     # On (some) OSX this tests triggers a warning (gh-7538)
+        #     sup.filter(RuntimeWarning,
+        #                "internal gelsd driver lwork query error,.*"
+        #                "Falling back to 'gelss' driver.")
 
-    # def test_random_overdet(self):
-    #     rng = np.random.RandomState(1234)
-    #     for dtype in REAL_DTYPES:
-    #         for (n, m) in ((20, 15), (200, 2)):
-    #             for lapack_driver in TestLstsq.lapack_drivers:
-    #                 for overwrite in (True, False):
-    #                     a = np.asarray(rng.random([n, m]), dtype=dtype)
-    #                     for i in range(m):
-    #                         a[i, i] = 20 * (0.1 + a[i, i])
-    #                     for i in range(4):
-    #                         b = np.asarray(rng.random([n, 3]), dtype=dtype)
-    #                         # Store values in case they are overwritten later
-    #                         a1 = a.copy()
-    #                         b1 = b.copy()
-    #                         out = lstsq(a1, b1,
-    #                                     lapack_driver=lapack_driver,
-    #                                     overwrite_a=overwrite,
-    #                                     overwrite_b=overwrite)
-    #                         x = out[0]
-    #                         r = out[2]
-    #                         assert_(r == m, f'expected efficient rank {m}, '
-    #                                 f'got {r}')
-    #                         assert_allclose(
-    #                                       x, direct_lstsq(a, b, cmplx=0),
-    #                                       rtol=25 * _eps_cast(a1.dtype),
-    #                                       atol=25 * _eps_cast(a1.dtype),
-    #                                       err_msg=f"driver: {lapack_driver}")
+        at = numpy.array(((1, 20), (-30, 4)))
+        for bt, overwrite, check_finite in \
+            itertools.product((((1, 0), (0, 1)), (1, 0), ((2, 1), (-30, 4))),
+                              (True, False),
+                              (True, False)):
 
-    # def test_random_complex_overdet(self):
-    #     rng = np.random.RandomState(1234)
-    #     for dtype in COMPLEX_DTYPES:
-    #         for (n, m) in ((20, 15), (200, 2)):
-    #             for lapack_driver in TestLstsq.lapack_drivers:
-    #                 for overwrite in (True, False):
-    #                     a = np.asarray(rng.random([n, m]) + 1j*rng.random([n, m]),
-    #                                    dtype=dtype)
-    #                     for i in range(m):
-    #                         a[i, i] = 20 * (0.1 + a[i, i])
-    #                     for i in range(2):
-    #                         b = np.asarray(rng.random([n, 3]), dtype=dtype)
-    #                         # Store values in case they are overwritten
-    #                         # later
-    #                         a1 = a.copy()
-    #                         b1 = b.copy()
-    #                         out = lstsq(a1, b1,
-    #                                     lapack_driver=lapack_driver,
-    #                                     overwrite_a=overwrite,
-    #                                     overwrite_b=overwrite)
-    #                         x = out[0]
-    #                         r = out[2]
-    #                         assert_(r == m, f'expected efficient rank {m}, '
-    #                                 f'got {r}')
-    #                         assert_allclose(
-    #                                   x, direct_lstsq(a, b, cmplx=1),
-    #                                   rtol=25 * _eps_cast(a1.dtype),
-    #                                   atol=25 * _eps_cast(a1.dtype),
-    #                                   err_msg=f"driver: {lapack_driver}")
-
-    # def test_check_finite(self):
-    #     with suppress_warnings() as sup:
-    #         # On (some) OSX this tests triggers a warning (gh-7538)
-    #         sup.filter(RuntimeWarning,
-    #                    "internal gelsd driver lwork query error,.*"
-    #                    "Falling back to 'gelss' driver.")
-
-    #     at = np.array(((1, 20), (-30, 4)))
-    #     for dtype, bt, lapack_driver, overwrite, check_finite in \
-    #         itertools.product(REAL_DTYPES,
-    #                           (((1, 0), (0, 1)), (1, 0), ((2, 1), (-30, 4))),
-    #                           TestLstsq.lapack_drivers,
-    #                           (True, False),
-    #                           (True, False)):
-
-    #         a = at.astype(dtype)
-    #         b = np.array(bt, dtype=dtype)
-    #         # Store values in case they are overwritten
-    #         # later
-    #         a1 = a.copy()
-    #         b1 = b.copy()
-    #         out = lstsq(a1, b1, lapack_driver=lapack_driver,
-    #                     check_finite=check_finite, overwrite_a=overwrite,
-    #                     overwrite_b=overwrite)
-    #         x = out[0]
-    #         r = out[2]
-    #         assert_(r == 2, f'expected efficient rank 2, got {r}')
-    #         assert_allclose(dot(a, x), b,
-    #                         rtol=25 * _eps_cast(a.dtype),
-    #                         atol=25 * _eps_cast(a.dtype),
-    #                         err_msg=f"driver: {lapack_driver}")
+            a = at.astype(numpy.double)
+            b = numpy.array(bt, dtype=numpy.double)
+            # Store values in case they are overwritten
+            # later
+            a1 = a.copy()
+            b1 = b.copy()
+            out = lstsq(a1, b1, check_finite=check_finite, overwrite_a=overwrite)
+            x = out[0]
+            r = out[2]
+            self.assertEqual(r, 2, f'expected efficient rank 2, got {r}')
+            assert_allclose(numpy.dot(a, x), b, atol=1e-7)
 
     # def test_empty(self):
     #     for a_shape, b_shape in (((0, 2), (0,)),
