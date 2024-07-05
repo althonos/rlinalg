@@ -50,17 +50,11 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
         Of shape (M, N), or (K, N) for ``mode in ['economic', 'raw']``.
         ``K = min(M, N)``.
     P : int ndarray
-        Of shape (N,).
-
-    Raises
-    ------
-    LinAlgError
-        Raised if decomposition fails
+        Of shape (N,). The column permutation.
 
     Notes
     -----
-    This is an interface to the LAPACK routines dgeqrf, zgeqrf,
-    dorgqr, zungqr, dgeqp3, and zgeqp3.
+    This is an interface to the R-modified LINPACK routine dqrdc2.
 
     If ``mode=economic``, the shapes of Q and R are (M, K) and (K, N) instead
     of (M,M) and (M,N), with ``K=min(M,N)``.

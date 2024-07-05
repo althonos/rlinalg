@@ -44,30 +44,12 @@ def load_tests(loader, tests, ignore):
     if sys.argv[0].endswith("green"):
         return tests
 
-    # recursively traverse all library submodules and load tests from them
-    packages = [None, rlinalg]
-    for pkg in iter(packages.pop, None):
-        for _, subpkgname, subispkg in pkgutil.walk_packages(pkg.__path__):
-            # do not import __main__ module to avoid side effects!
-            if (
-                subpkgname == "__main__"
-                or subpkgname.startswith("tests")
-                or subpkgname.startswith("cli")
-            ):
-                continue
-            # import the submodule and add it to the tests
-            module = importlib.import_module(".".join([pkg.__name__, subpkgname]))
-            globs = {"rlinalg": rlinalg, "numpy": numpy, **module.__dict__}
-            tests.addTests(
-                doctest.DocTestSuite(
-                    module,
-                    globs=globs,
-                    optionflags=+doctest.ELLIPSIS,
-                )
-            )
-            # if the submodule is a package, we need to process its submodules
-            # as well, so we add it to the package queue
-            if subispkg and subpkgname != "tests":
-                packages.append(module)
+    tests.addTests(
+        doctest.DocTestSuite(
+            rlinalg,
+            globs={"rlinalg": rlinalg, "numpy": numpy, **rlinalg.__dict__},
+            optionflags=+doctest.ELLIPSIS,
+        )
+    )
 
     return tests

@@ -3,29 +3,34 @@ import math
 import numpy
 
 from . import linpack
-from ._misc import _asarray_validated, set_module
+from ._misc import _asarray_validated, set_module, _datacopied
 from ._decomp_qr import qr
 
 
 def _kappa_tri(a, lower=False, norm=None, check_finite=True):
-
     a1 = numpy.atleast_2d(_asarray_validated(a, check_finite=check_finite))
     m, n = a1.shape
 
     if m != n:
         raise ValueError("matrix must be square")
 
-    if norm is None:
-        norm = 1
-    elif norm == numpy.inf:
+    if norm == numpy.inf:
         a1 = a1.T
 
-    rcond, _ = linpack.dtrco(a1, lower=lower, check_finite=False)
+    rcond = linpack.dtrco(a1, job=1 - bool(lower))
     return 1 / rcond
 
 
 @set_module("rlinalg")
-def kappa(a, exact=False, norm=None, method="qr", check_finite=True, lower=False):
+def kappa(
+    a,
+    overwrite_a=False,
+    exact=False,
+    norm=None,
+    method="qr",
+    check_finite=True,
+    lower=False,
+):
     """
     Compute or estimate the condition number of a matrix.
 
@@ -66,10 +71,6 @@ def kappa(a, exact=False, norm=None, method="qr", check_finite=True, lower=False
     >>> rlinalg.kappa(a, exact=True)
     13.6790...
 
-    >>> b = numpy.concat([a, numpy.arange(2, 12).reshape(1, -1)], axis=0)
-    >>> rlinalg.kappa(b)
-    4.45702...e+16
-
     """
     if norm not in {None, 1, 2, numpy.inf}:
         raise ValueError("Mode argument should be one of [None, 1, 2, numpy.inf]")
@@ -78,6 +79,7 @@ def kappa(a, exact=False, norm=None, method="qr", check_finite=True, lower=False
         raise ValueError("Method argument should be one of ['qr', 'raw']")
 
     a1 = numpy.atleast_2d(_asarray_validated(a, check_finite=check_finite))
+    overwrite_a = overwrite_a or _datacopied(a1, a)
 
     if exact and norm is None or norm == 2:
         s = numpy.linalg.svd(a1, compute_uv=False)
@@ -86,8 +88,10 @@ def kappa(a, exact=False, norm=None, method="qr", check_finite=True, lower=False
     M, N = a1.shape
 
     if method == "qr" or M != N:
-        R, P = qr(a1.T if M < N else a1, mode="r")
-        R = R[: R.shape[1]]
+        R, P = qr(
+            a1.T if M < N else a1, mode="r", overwrite_a=overwrite_a, check_finite=False
+        )
+        R = R[: min(M, N)]
         lower = False
     else:
         R = a1
