@@ -9,7 +9,7 @@ QRResult = collections.namedtuple("QRResult", "Q R P")
 
 
 @set_module("rlinalg")
-def qr(a, overwrite_a=False, mode="full", check_finite=True, tol=1e-12):
+def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
     """
     Compute QR decomposition of a matrix.
 
