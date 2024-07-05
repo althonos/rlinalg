@@ -173,13 +173,18 @@ def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=Fal
 
     if mode == "left":
         # FIXME: check if padding is really necessary here?
+        #        maybe calling dqrsl directly would be sufficient
         if c1.shape[0] < M:
             c1 = numpy.pad(c1, (0, M - c1.shape[0]))
-        # compute QC = Q @ c
+        # compute QC = Q @ c with c of dim (M,1)
         if vector:
             QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, 0]
+        # compute QC = Q @ c with c of dim (M,*)
         else:
-            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :k]
+            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :]
+            # make sure the resulting dimension is at most
+            if c1.shape[0] > QR.shape[1]: 
+                QC = QC[:, :QR.shape[1]]
 
     elif vector:
         # compute QC = c @ Q with c of dim (1,M)

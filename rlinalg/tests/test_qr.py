@@ -23,7 +23,9 @@ class TestQR(unittest.TestCase):
         assert_array_almost_equal(q @ r, a)
 
     def test_simple_left(self):
+        # from scipy.linalg import qr, qr_multiply
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
+
         q, r, *_ = qr(a)
         c = [1, 2, 3]
         qc, r2, *_ = qr_multiply(a, c, "left")
@@ -31,9 +33,9 @@ class TestQR(unittest.TestCase):
         assert_array_almost_equal(r, r2)
         qc, r2, *_ = qr_multiply(a, numpy.eye(3), "left")
         assert_array_almost_equal(q, qc)
-        # FIXME: this should work!
-        # cq, r, *_ = qr_multiply(a, numpy.ones((3,5)), "left")
-        # assert_array_almost_equal(cq, q @ numpy.eye(3, 5))
+        c = numpy.arange(15).reshape(3, 5)
+        cq, r, *_ = qr_multiply(a, c, "left")
+        assert_array_almost_equal(cq, q @ c)
 
     def test_simple_right(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
@@ -160,7 +162,7 @@ class TestQR(unittest.TestCase):
         qc, r, kpvt, rank = qr_multiply(a, c, "left")
         assert_array_equal(jpvt, kpvt)
         assert_array_almost_equal(q @ c, qc)
-        qc, r, jpvt, rank = qr_multiply(a, numpy.eye(2), "left")
+        qc, r, *_ = qr_multiply(a, numpy.eye(2), "left")
         assert_array_almost_equal(qc, q)
 
     def test_shapes(self):
