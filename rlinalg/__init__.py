@@ -8,6 +8,7 @@ __license__ = "GPL-3.0-or-later"
 from . import linpack
 from ._decomp_qr import qr
 from ._kappa import kappa
+from ._lstsq import lstsq
 
 __all__ = [
     "qr",

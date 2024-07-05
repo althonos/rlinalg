@@ -2,6 +2,7 @@ python_sources = [
     '__init__.py',
     '_decomp_qr.py',
     '_kappa.py',
+    '_lstsq.py',
     '_misc.py',
 ]
 
