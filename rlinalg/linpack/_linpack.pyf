@@ -5,6 +5,7 @@ python module _linpack
        include '_dqrutl.pyf'
        include '_dtrco.pyf'
        include '_dqrsl.pyf'
+       include '_dqrls.pyf'
 
     end interface
 end python module _linpack
