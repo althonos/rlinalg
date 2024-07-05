@@ -1,18 +1,19 @@
 import numpy
 
 
-
 def set_module(module):
     """Private decorator for overriding __module__ on a function or class.
 
     Note
     ----
     Taken from NumPy.
-    
+
     """
+
     def decorator(func):
         func.__module__ = module
         return func
+
     return decorator
 
 

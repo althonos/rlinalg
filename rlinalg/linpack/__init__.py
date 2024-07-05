@@ -9,8 +9,4 @@ from ._linpack import (
     dqrls,
 )
 
-__all__ = [
-    "dqrdc2",
-    "dqrqy",
-    "dtrco"
-]
+__all__ = ["dqrdc2", "dqrqy", "dtrco"]
