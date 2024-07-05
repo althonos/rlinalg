@@ -107,7 +107,23 @@ def qr(a, overwrite_a=False, mode="full", tol=1e-7, check_finite=True):
 
     # accomodate empty arrays
     if a1.size == 0:
-        raise NotImplementedError
+        K = min(M, N)
+        if mode not in ['economic', 'raw']:
+            Q = numpy.empty_like(a1, shape=(M, M))
+            Q[...] = numpy.identity(M)
+            R = numpy.empty_like(a1)
+        else:
+            Q = numpy.empty_like(a1, shape=(M, K))
+            R = numpy.empty_like(a1, shape=(K, N))
+        R = R
+        P = numpy.arange(N, dtype=numpy.int32)
+        if mode == 'r':
+            return R, P
+        elif mode == 'raw':
+            QR = numpy.empty_like(a1, shape=(M, N))
+            tau = numpy.zeros_like(a1, shape=(K,))
+            return ((QR, tau), R, P)
+        return QRResult(Q, R, P)
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
 

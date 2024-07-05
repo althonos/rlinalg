@@ -5,6 +5,7 @@ import numpy.testing
 
 from numpy.testing import (
     assert_equal,
+    assert_allclose,
     assert_array_almost_equal,
     assert_,
 )
@@ -618,31 +619,31 @@ class TestQR(unittest.TestCase):
     #         assert_equal(p.shape, (n,))
     #         assert_equal(p.dtype, numpy.int32)
 
-    # @pytest.mark.parametrize(("m", "n"), [(0, 0), (0, 2), (2, 0)])
-    # def test_empty(self, m, n):
-    #     k = min(m, n)
+    def test_empty(self):
+        for m, n in [(0, 0), (0, 2), (2, 0)]:
+            k = min(m, n)
 
-    #     a = numpy.empty((m, n))
-    #     q, r, p = qr(a)
-    #     assert_allclose(q, numpy.identity(m))
-    #     assert_allclose(r, numpy.empty((m, n)))
+            a = numpy.empty((m, n))
+            q, r, p = qr(a)
+            assert_allclose(q, numpy.identity(m))
+            assert_allclose(r, numpy.empty((m, n)))
 
-    #     q, r, p = qr(a)
-    #     assert_allclose(q, numpy.identity(m))
-    #     assert_allclose(r, numpy.empty((m, n)))
-    #     assert_allclose(p, numpy.arange(n))
+            q, r, p = qr(a)
+            assert_allclose(q, numpy.identity(m))
+            assert_allclose(r, numpy.empty((m, n)))
+            assert_allclose(p, numpy.arange(n))
 
-    #     r, = qr(a, mode='r')
-    #     assert_allclose(r, numpy.empty((m, n)))
+            r, p = qr(a, mode='r')
+            assert_allclose(r, numpy.empty((m, n)))
 
-    #     q, r, p = qr(a, mode='economic')
-    #     assert_allclose(q, numpy.empty((m, k)))
-    #     assert_allclose(r, numpy.empty((k, n)))
+            q, r, p = qr(a, mode='economic')
+            assert_allclose(q, numpy.empty((m, k)))
+            assert_allclose(r, numpy.empty((k, n)))
 
-    #     (raw, tau), r = qr(a, mode='raw')
-    #     assert_allclose(raw, numpy.empty((m, n)))
-    #     assert_allclose(tau, numpy.empty((k,)))
-    #     assert_allclose(r, numpy.empty((k, n)))
+            (raw, tau), r, p = qr(a, mode='raw')
+            assert_allclose(raw, numpy.empty((m, n)))
+            assert_allclose(tau, numpy.empty((k,)))
+            assert_allclose(r, numpy.empty((k, n)))
 
     # def test_multiply_empty(self):
     #     a = numpy.empty((0, 0))
