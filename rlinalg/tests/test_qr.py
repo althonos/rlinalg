@@ -19,6 +19,7 @@ class TestQR(unittest.TestCase):
     def test_simple(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
         q, r, _, _ = qr(a)
+        print(q)
         assert_array_almost_equal(q.T @ q, numpy.eye(3))
         assert_array_almost_equal(q @ r, a)
 

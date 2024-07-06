@@ -150,13 +150,13 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(QR[:, :M], tau[:k], D, k=k)
+        Q = linpack.dqrqy(QR[:, :M], tau[:k], D, k=k, overwrite_x=True)
     elif mode == "economic":
         D = numpy.eye(M, N, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k)
+        Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k, overwrite_x=True)
     else:
         D = numpy.eye(M, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k)
+        Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k, overwrite_x=True)
 
     return QRResult(Q, R, P, k)
 
@@ -257,10 +257,10 @@ def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=Fal
             c1 = numpy.pad(c1, (0, M - c1.shape[0]))
         # compute QC = Q @ c with c of dim (M,1)
         if vector:
-            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, 0]
+            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k, overwrite_x=True)[:, 0]
         # compute QC = Q @ c with c of dim (M,*)
         else:
-            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :]
+            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k, overwrite_x=True)[:, :]
             # make sure the resulting dimension is at most
             if c1.shape[0] > QR.shape[1]:
                 QC = QC[:, : QR.shape[1]]
