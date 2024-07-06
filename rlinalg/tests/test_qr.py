@@ -19,9 +19,10 @@ class TestQR(unittest.TestCase):
     def test_simple(self):
         a = [[8, 2, 3], [2, 9, 3], [5, 3, 6]]
         q, r, _, _ = qr(a)
-        print(q)
         assert_array_almost_equal(q.T @ q, numpy.eye(3))
         assert_array_almost_equal(q @ r, a)
+        qexp = [[-0.83, 0.27, -0.49], [-0.21, -0.96, -0.18], [-0.52, -0.04, 0.85]]
+        assert_allclose(q, qexp, atol=1e-2)
 
     def test_simple_left(self):
         # from scipy.linalg import qr, qr_multiply
