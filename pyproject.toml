@@ -41,3 +41,6 @@ dynamic = ["version"]
 "Coverage" = "https://codecov.io/gh/althonos/rlinalg/"
 "Builds" = "https://github.com/althonos/rlinalg/actions"
 "PyPI" = "https://pypi.org/project/rlinalg"
+
+[tool.cibuildwheel.linux]
+before-all = "yum -y install openblas-devel gcc-gfortran"
