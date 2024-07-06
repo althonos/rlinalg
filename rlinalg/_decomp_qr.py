@@ -52,11 +52,11 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     P : int ndarray
         Of shape (N,). The column permutation.
     rank : int
-        The rank of the matrix
+        The rank of the matrix.
 
     Notes
     -----
-    This is an interface to the R-modified LINPACK routine dqrdc2.
+    This is an interface to the R-modified LINPACK routine ``dqrdc2``.
 
     If ``mode=economic``, the shapes of Q and R are (M, K) and (K, N) instead
     of (M,M) and (M,N), with ``K=min(M,N)``.
@@ -157,10 +157,77 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
 
 
 def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=False):
+    """
+    Calculate the QR decomposition and multiply Q with a matrix.
 
+    Calculate the decomposition ``A[:, P] = Q R`` where Q is
+    unitary/orthogonal and R upper triangular. Multiply Q with a vector
+    or a matrix c.
+
+    Parameters
+    ----------
+    a : (M, N), array_like
+        Input array
+    c : array_like
+        Input array to be multiplied by ``Q``.
+    mode : {'left', 'right'}, optional
+        ``Q @ c`` is returned if mode is 'left', ``c @ Q`` is returned if
+        mode is 'right'.
+        The shape of c must be appropriate for the matrix multiplications,
+        if mode is 'left', ``min(a.shape) == c.shape[0]``,
+        if mode is 'right', ``a.shape[0] == c.shape[1]``.
+    overwrite_a : bool, optional
+        Whether data in a is overwritten (may improve performance)
+    check_finite : bool, optional
+        Whether to check that the input matrix contains only finite numbers.
+        Disabling may give a performance gain, but may result in problems
+        (crashes, non-termination) if the inputs do contain infinities or NaNs.
+    tol : float
+        The absolute tolerance to which each column norm is required.
+        An column is considered negligible when its norm falls under
+        this value.
+
+    Returns
+    -------
+    CQ : ndarray
+        The product of ``Q`` and ``c``.
+    R : (K, N), ndarray
+        R array of the resulting QR factorization where ``K = min(M, N)``.
+    P : (N,) ndarray
+        Integer pivot array.
+    rank : int
+        The rank of the matrix.
+
+    Notes
+    -----
+    This is an interface to the R-modified LINPACK routine ``dqrdc2``
+    and ``dqrsl``.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from scipy.linalg import qr_multiply, qr
+    >>> A = np.array([[1, 3, 3], [2, 3, 2], [2, 3, 3], [1, 3, 2]])
+    >>> qc, r1, piv1 = qr_multiply(A, 2*np.eye(4), pivoting=1)
+    >>> qc
+    array([[-1.,  1., -1.],
+           [-1., -1.,  1.],
+           [-1., -1., -1.],
+           [-1.,  1.,  1.]])
+    >>> r1
+    array([[-6.00000000e+00, -3.00000000e+00, -5.00000000e+00],
+           [ 0.00000000e+00, -1.00000000e+00, -1.11022302e-16],
+           [ 0.00000000e+00,  0.00000000e+00, -1.00000000e+00]])
+    >>> piv1
+    array([1, 0, 2], dtype=int32)
+    >>> q2, r2, piv2 = qr(A, mode='economic', pivoting=1)
+    >>> np.allclose(2*q2 - qc, np.zeros((4, 3)))
+    True
+
+    """
     if mode not in {"right", "left"}:
         raise ValueError("Mode argument should be one of ['right', 'left']")
-    
+
     (QR, tau), R, P, k = qr(a, mode="raw", tol=tol, check_finite=check_finite, overwrite_a=overwrite_a)
     M, N = QR.shape
 
@@ -183,7 +250,7 @@ def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=Fal
         else:
             QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :]
             # make sure the resulting dimension is at most
-            if c1.shape[0] > QR.shape[1]: 
+            if c1.shape[0] > QR.shape[1]:
                 QC = QC[:, :QR.shape[1]]
 
     elif vector:
@@ -191,7 +258,7 @@ def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=Fal
         if c1.shape[0] != QR.shape[0]:
             raise ValueError(f"Array shapes are not compatible for c @ Q operation: {(1, c1.shape[0])} vs {QR.shape}")
         QC = linpack.dqrqty(QR[:, :k], tau[:k], c1[:M], k=k).T[0, :k]
-    else:         
+    else:
         # compute QC = c @ Q with c of dim (*,M)
         if c1.shape[1] != QR.shape[0]:
             raise ValueError(f"Array shapes are not compatible for c @ Q operation: {c1.shape} vs {QR.shape}")
