@@ -40,9 +40,6 @@ def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
 
     Raises
     ------
-    LinAlgError
-        If computation does not converge.
-
     ValueError
         When parameters are not compatible.
 

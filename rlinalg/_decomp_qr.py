@@ -54,6 +54,11 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     rank : int
         The rank of the matrix.
 
+    Raises
+    ------
+    ValueError
+        When parameters are not compatible.
+
     Notes
     -----
     This is an interface to the R-modified LINPACK routine ``dqrdc2``.
@@ -197,6 +202,11 @@ def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=Fal
         Integer pivot array.
     rank : int
         The rank of the matrix.
+
+    Raises
+    ------
+    ValueError
+        When parameters are not compatible.
 
     Notes
     -----
