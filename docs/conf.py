@@ -11,7 +11,6 @@ import os
 import re
 import semantic_version
 import shutil
-import sphinx_bootstrap_theme
 import sys
 import inspect
 

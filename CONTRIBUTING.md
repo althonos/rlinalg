@@ -22,8 +22,8 @@ This project targets Python 3.7+.
 ### Docstrings
 
 The docstring lines should not be longer than 76 characters (which allows
-rendering the entire module in a 80x24 terminal window without soft-wrap).  
-Docstrings should be written in Google format.
+rendering the entire module in a 80x24 terminal window without soft-wrap).
+Docstrings should be written in NumPy format.
 
 ### Format
 
