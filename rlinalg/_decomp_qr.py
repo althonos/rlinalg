@@ -150,7 +150,9 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
-        Q = linpack.dqrqy(QR[:, :M], tau[:k], D, k=k, overwrite_x=True)
+        Q = linpack.dqrqy(
+            QR[:, :M], tau[:k], D, k=k, overwrite_x=True, overwrite_y=True
+        )
     elif mode == "economic":
         D = numpy.eye(M, N, dtype=numpy.double, order="F")
         Q = linpack.dqrqy(QR[:, :k], tau[:k], D, k=k, overwrite_x=True)

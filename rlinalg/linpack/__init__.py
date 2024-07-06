@@ -12,24 +12,38 @@ from ._linpack import (
 __all__ = ["dqrdc2", "dqrqy", "dqrqty", "dtrco", "dqrsl", "dqrls"]
 
 
-def dqrqy(x, qraux, y, k=None, overwrite_x=True):
+def dqrqy(x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y=False):
     """
     Implementation of `dqrqty.`
     """
-    ldx = x.shape[0]
-    ny = y.shape[-1]
+    asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
+
+    x1 = asarray(x, order="F", dtype=numpy.double)
+    overwrite_x = overwrite_x or _datacopied(x1, x)
+    if len(x1.shape) != 2:
+        raise ValueError("expected a 2-D array")
+
+    y1 = asarray(y, order="F", dtype=numpy.double)
+    overwrite_y = overwrite_y or _datacopied(y1, y)
+    if not 1 <= len(y1.shape) <= 2:
+        raise ValueError("expected a 1-D or 2-D array")
+
+    ldx = x1.shape[0]
+    ny = y1.shape[-1]
     dummy = numpy.array(0, dtype=numpy.double)
 
     if k is None:
-        k = x.shape[1]
+        k = x1.shape[1]
 
-    if y.ndim == 1:
-        qy = numpy.zeros((y.shape[0], 1), order="C")
+    if y1.ndim == 1:
+        qy = y1.reshape(-1, 1)
+        if not overwrite_y:
+            qy = qy.copy()
         dqrsl(
-            x[:, :],
+            x1[:, :],
             k=k,
             qraux=qraux,
-            y=y[:],
+            y=qy[:, 0],
             qy=qy[:, 0],
             qty=dummy,
             b=dummy,
@@ -40,13 +54,15 @@ def dqrqy(x, qraux, y, k=None, overwrite_x=True):
         )
 
     else:
-        qy = numpy.zeros_like(y, order="F")
+        qy = y1
+        if not overwrite_y:
+            qy = numpy.copy(y1, order="F")
         for j in range(ny):
             dqrsl(
                 x[:, :],
                 k=k,
                 qraux=qraux,
-                y=y[:, j],
+                y=qy[:, j],
                 qy=qy[:, j],
                 qty=dummy,
                 b=dummy,
