@@ -384,7 +384,7 @@ class TestQR(unittest.TestCase):
         n = 100
         for k in range(2):
             a = rng.random([m, n])
-            q, r, p, _ = qr(a, mode='economic')
+            q, r, p, _ = qr(a, mode="economic")
             assert_array_almost_equal(q.T @ q, numpy.eye(n))
             assert_array_almost_equal(q @ r, a)
             assert_equal(q.shape, (m, n))
@@ -397,12 +397,12 @@ class TestQR(unittest.TestCase):
         n = 100
         for k in range(2):
             a = rng.random([m, n])
-            q, r, p, _ = qr(a, mode='economic')
+            q, r, p, _ = qr(a, mode="economic")
             assert_array_almost_equal(q.T @ q, numpy.eye(n))
             assert_array_almost_equal(q @ r, a[:, p])
             assert_equal(q.shape, (m, n))
             assert_equal(r.shape, (n, n))
-            q2, r2, p2, _ = qr(a[:, p], mode='economic')
+            q2, r2, p2, _ = qr(a[:, p], mode="economic")
             assert_array_almost_equal(q, q2)
             assert_array_almost_equal(r, r2)
 
@@ -505,16 +505,16 @@ class TestQR(unittest.TestCase):
             assert_allclose(p, numpy.arange(n))
             self.assertEqual(rank, 0)
 
-            r, p, rank = qr(a, mode='r')
+            r, p, rank = qr(a, mode="r")
             assert_allclose(r, numpy.empty((m, n)))
             self.assertEqual(rank, 0)
 
-            q, r, p, rank = qr(a, mode='economic')
+            q, r, p, rank = qr(a, mode="economic")
             assert_allclose(q, numpy.empty((m, k)))
             assert_allclose(r, numpy.empty((k, n)))
             self.assertEqual(rank, 0)
 
-            (raw, tau), r, p, rank = qr(a, mode='raw')
+            (raw, tau), r, p, rank = qr(a, mode="raw")
             assert_allclose(raw, numpy.empty((m, n)))
             assert_allclose(tau, numpy.empty((k,)))
             assert_allclose(r, numpy.empty((k, n)))

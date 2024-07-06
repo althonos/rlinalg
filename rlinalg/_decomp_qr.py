@@ -110,7 +110,7 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     # accomodate empty arrays
     if a1.size == 0:
         K = min(M, N)
-        if mode not in ['economic', 'raw']:
+        if mode not in ["economic", "raw"]:
             Q = numpy.empty_like(a1, shape=(M, M))
             Q[...] = numpy.identity(M)
             R = numpy.empty_like(a1)
@@ -119,9 +119,9 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
             R = numpy.empty_like(a1, shape=(K, N))
         R = R
         P = numpy.arange(N, dtype=numpy.int32)
-        if mode == 'r':
+        if mode == "r":
             return R, P, 0
-        elif mode == 'raw':
+        elif mode == "raw":
             QR = numpy.empty_like(a1, shape=(M, N))
             tau = numpy.zeros_like(a1, shape=(K,))
             return ((QR, tau), R, P, 0)
@@ -156,7 +156,7 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     return QRResult(Q, R, P, k)
 
 
-def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=False):
+def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=False):
     """
     Calculate the QR decomposition and multiply Q with a matrix.
 
@@ -228,7 +228,9 @@ def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=Fal
     if mode not in {"right", "left"}:
         raise ValueError("Mode argument should be one of ['right', 'left']")
 
-    (QR, tau), R, P, k = qr(a, mode="raw", tol=tol, check_finite=check_finite, overwrite_a=overwrite_a)
+    (QR, tau), R, P, k = qr(
+        a, mode="raw", tol=tol, check_finite=check_finite, overwrite_a=overwrite_a
+    )
     M, N = QR.shape
 
     asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
@@ -251,17 +253,21 @@ def qr_multiply(a, c, mode='right', tol=1e-7, check_finite=True, overwrite_a=Fal
             QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k)[:, :]
             # make sure the resulting dimension is at most
             if c1.shape[0] > QR.shape[1]:
-                QC = QC[:, :QR.shape[1]]
+                QC = QC[:, : QR.shape[1]]
 
     elif vector:
         # compute QC = c @ Q with c of dim (1,M)
         if c1.shape[0] != QR.shape[0]:
-            raise ValueError(f"Array shapes are not compatible for c @ Q operation: {(1, c1.shape[0])} vs {QR.shape}")
+            raise ValueError(
+                f"Array shapes are not compatible for c @ Q operation: {(1, c1.shape[0])} vs {QR.shape}"
+            )
         QC = linpack.dqrqty(QR[:, :k], tau[:k], c1[:M], k=k).T[0, :k]
     else:
         # compute QC = c @ Q with c of dim (*,M)
         if c1.shape[1] != QR.shape[0]:
-            raise ValueError(f"Array shapes are not compatible for c @ Q operation: {c1.shape} vs {QR.shape}")
+            raise ValueError(
+                f"Array shapes are not compatible for c @ Q operation: {c1.shape} vs {QR.shape}"
+            )
         QC = linpack.dqrqty(QR[:, :k], tau[:k], c1.T[:M], k=k).T[:, :k]
 
     return QC, R, P, k
