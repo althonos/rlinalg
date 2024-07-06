@@ -11,4 +11,10 @@ from ._cond import cond
 from ._lstsq import lstsq
 
 __all__ = ["qr", "cond", "linpack", "lstsq", "qr_multiply"]
-__test__ = {k: locals()[k] for k in __all__}
+__test__ = {
+    "cond": cond,
+    "lstsq": lstsq,
+    "linpack": lstsq,
+    "qr": qr,
+    "qr_multiply": qr_multiply,
+}
