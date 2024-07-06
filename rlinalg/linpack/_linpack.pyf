@@ -2,7 +2,7 @@ python module _linpack
     interface
 
        include '_dqrdc2.pyf'
-       include '_dqrutl.pyf'
+       include '_dqrqy.pyf'
        include '_dtrco.pyf'
        include '_dqrsl.pyf'
        include '_dqrls.pyf'

@@ -1,3 +1,5 @@
+import functools
+
 import numpy
 from numpy import atleast_2d
 
@@ -7,6 +9,7 @@ from ._linpack import (
     dtrco,
     dqrls,
     dqrsl,
+    dqrqy as _dqrqy,
 )
 
 __all__ = ["dqrdc2", "dqrqy", "dqrqty", "dtrco", "dqrsl", "dqrls"]
@@ -14,65 +17,50 @@ __all__ = ["dqrdc2", "dqrqy", "dqrqty", "dtrco", "dqrsl", "dqrls"]
 
 def dqrqy(x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y=False):
     """
-    Implementation of `dqrqty.`
+    Wrapper for ``dqrqy``.
+
+    Parameters
+    ----------
+    x : input rank-2 array('d') with bounds (ldx,p)
+    qraux : input rank-1 array('d') with bounds (p)
+    y : input rank-2 array('d') with bounds (n,ny)
+
+    Other Parameters
+    ----------------
+    k : input int, optional
+        Default: shape(x,1)
+    overwrite_x : input int, optional
+        Default: 1
+    overwrite_y : input int, optional
+        Default: 1
+
+    Returns
+    -------
+    qy : rank-2 array('d') with bounds (n,ny)
+
     """
     asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-
-    x1 = asarray(x, order="F", dtype=numpy.double)
-    overwrite_x = overwrite_x or _datacopied(x1, x)
-    if len(x1.shape) != 2:
-        raise ValueError("expected a 2-D array")
 
     y1 = asarray(y, order="F", dtype=numpy.double)
     overwrite_y = overwrite_y or _datacopied(y1, y)
     if not 1 <= len(y1.shape) <= 2:
         raise ValueError("expected a 1-D or 2-D array")
 
-    ldx = x1.shape[0]
-    ny = y1.shape[-1]
-    dummy = numpy.array(0, dtype=numpy.double)
-
-    if k is None:
-        k = x1.shape[1]
-
-    if y1.ndim == 1:
-        qy = y1.reshape(-1, 1)
-        if not overwrite_y:
-            qy = qy.copy()
-        dqrsl(
-            x1[:, :],
-            k=k,
-            qraux=qraux,
-            y=qy[:, 0],
-            qy=qy[:, 0],
-            qty=dummy,
-            b=dummy,
-            rsd=dummy,
-            xb=dummy,
-            job=10000,
-            overwrite_x=overwrite_x,
-        )
-
-    else:
-        qy = y1
-        if not overwrite_y:
-            qy = numpy.copy(y1, order="F")
-        for j in range(ny):
-            dqrsl(
-                x[:, :],
-                k=k,
-                qraux=qraux,
-                y=qy[:, j],
-                qy=qy[:, j],
-                qty=dummy,
-                b=dummy,
-                rsd=dummy,
-                xb=dummy,
-                job=10000,
-                overwrite_x=overwrite_x,
-            )
-
-    return qy
+    qy = y1.reshape(-1, 1) if y.ndim == 1 else y1
+    if not overwrite_y:
+        qy = qy.copy()
+    return _dqrqy(
+        x=x,
+        qraux=qraux,
+        y=y.reshape(-1, 1) if y.ndim == 1 else y,
+        ldx=x.shape[0],
+        n=y.shape[0],
+        p=qraux.shape[0],
+        k=k,
+        ny=1 if y.ndim == 1 else y.shape[1],
+        qy=qy,
+        overwrite_x=overwrite_x,
+    )
 
 
 def dqrqty(x, qraux, y, k=None, overwrite_x=True):
