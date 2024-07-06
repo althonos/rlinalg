@@ -11,7 +11,7 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
 [![Python Implementations](https://img.shields.io/pypi/implementation/rlinalg?style=flat-square&maxAge=3600&label=impl)](https://pypi.org/project/rlinalg/#files)
 [![Source](https://img.shields.io/badge/source-GitHub-303030.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/rlinalg/)
-[![Mirror](https://img.shields.io/badge/mirror-EMBL-009f4d?style=flat-square&maxAge=2678400)](https://git.embl.de/larralde/rlinalg/)
+[![Mirror](https://img.shields.io/badge/mirror-LUMC-darkblue?style=flat-square&maxAge=2678400)](https://git.lumc.nl/mflarralde/rlinalg)
 [![GitHub issues](https://img.shields.io/github/issues/althonos/rlinalg.svg?style=flat-square&maxAge=600)](https://github.com/althonos/rlinalg/issues)
 [![Docs](https://img.shields.io/readthedocs/rlinalg/latest?style=flat-square&maxAge=600)](https://rlinalg.readthedocs.io)
 [![Changelog](https://img.shields.io/badge/keep%20a-changelog-8A0707.svg?maxAge=2678400&style=flat-square)](https://github.com/althonos/rlinalg/blob/master/CHANGELOG.md)
