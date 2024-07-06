@@ -131,7 +131,8 @@ This library is provided under the
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/) or later.
 It includes some code redistributed from the R language, which is licensed under the
 [GNU General Public License v2.0](https://choosealicense.com/licenses/gpl-2.0/)
-or later.
+or later. Some tests were adapted from SciPy, which is developed under the 
+[BSD-3-clause](https://choosealicense.com/licenses/bsd-3-clause/) license.
 
 *This project is in no way not affiliated, sponsored, or otherwise endorsed
 by the [`R` project](https://www.r-project.org/).
