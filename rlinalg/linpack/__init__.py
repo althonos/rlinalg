@@ -10,12 +10,21 @@ from ._linpack import (
     dqrls,
     dqrsl,
     dqrqy as _dqrqy,
+    dqrqty as _dqrqty,
 )
 
 __all__ = ["dqrdc2", "dqrqy", "dqrqty", "dtrco", "dqrsl", "dqrls"]
 
 
-def dqrqy(x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y=False):
+def dqrqy(
+    x,
+    qraux,
+    y,
+    k=None,
+    check_finite=True,
+    overwrite_x=False,
+    overwrite_y=False,
+):
     """
     Wrapper for ``dqrqy``.
 
@@ -29,6 +38,8 @@ def dqrqy(x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y
     ----------------
     k : input int, optional
         Default: shape(x,1)
+    check_finite : input int, optional
+        Default: True
     overwrite_x : input int, optional
         Default: False
     overwrite_y : input int, optional
@@ -64,7 +75,13 @@ def dqrqy(x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y
 
 
 def dqrqty(
-    x, qraux, y, k=None, check_finite=True, overwrite_x=False, overwrite_y=False
+    x,
+    qraux,
+    y,
+    k=None,
+    check_finite=True,
+    overwrite_x=False,
+    overwrite_y=False,
 ):
     """
     Implementation of `dqrqty.`
@@ -86,7 +103,7 @@ def dqrqty(
 
     Returns
     -------
-    qy : rank-2 array('d') with bounds (n,ny)
+    qty : rank-2 array('d') with bounds (n,ny)
 
     """
     asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
@@ -96,46 +113,18 @@ def dqrqty(
     if not 1 <= len(y1.shape) <= 2:
         raise ValueError("expected a 1-D or 2-D array")
 
-    ny = y1.shape[-1]
-    dummy = numpy.array(0, dtype=numpy.double)
-
-    if k is None:
-        k = x.shape[1]
-
-    if y.ndim == 1:
-        qty = y.reshape(-1, 1)  # numpy.zeros((y.shape[0], 1), order="F")
-        if not overwrite_y:
-            qty = qty.copy(order="F")
-        info = dqrsl(
-            x[:, :],
-            qraux=qraux,
-            y=qty[:, 0],
-            qy=dummy,
-            qty=qty[:, 0],
-            b=dummy,
-            rsd=dummy,
-            xb=dummy,
-            job=1000,
-            overwrite_x=overwrite_x,
-        )
-
-    else:
-        qty = y
-        if not overwrite_y:
-            qty = qty.copy(order="F")
-        for j in range(ny):
-            info = dqrsl(
-                x[:, :],
-                k=k,
-                qraux=qraux,
-                y=qty[:, j],
-                qy=dummy,
-                qty=qty[:, j],
-                b=dummy,
-                rsd=dummy,
-                xb=dummy,
-                job=1000,
-                overwrite_x=overwrite_x,
-            )
-
-    return qty
+    qty = y1.reshape(-1, 1) if y.ndim == 1 else y1
+    if not overwrite_y:
+        qty = qty.copy()
+    return _dqrqty(
+        x=x,
+        qraux=qraux,
+        y=y.reshape(-1, 1) if y.ndim == 1 else y,
+        ldx=x.shape[0],
+        n=y.shape[0],
+        p=qraux.shape[0],
+        k=k,
+        ny=1 if y.ndim == 1 else y.shape[1],
+        qty=qty,
+        overwrite_x=overwrite_x,
+    )

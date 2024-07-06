@@ -10,6 +10,7 @@ fortan_sources = [
      '../../vendor/r-source/src/appl/dqrsl.f',
      '../../vendor/r-source/src/appl/dqrls.f',
      '_dqrqy.f',
+     '_dqrqty.f',
 ]
 
 pyf_sources = [
@@ -18,6 +19,7 @@ pyf_sources = [
   '_dqrsl.pyf',
   '_dqrls.pyf',
   '_dqrqy.pyf',
+  '_dqrqty.pyf',
 ]
 
 linpackmodule = custom_target('_linpackmodule.c',
