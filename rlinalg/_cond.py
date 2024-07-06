@@ -22,7 +22,7 @@ def _kappa_tri(a, lower=False, norm=None, check_finite=True):
 
 
 @set_module("rlinalg")
-def kappa(
+def cond(
     a,
     overwrite_a=False,
     exact=False,
@@ -60,15 +60,31 @@ def kappa(
     kappa : float
         The condition number, or an approximation if ``exact=False``.
 
+    Raises
+    ------
+    ValueError
+        When parameters are not compatible.
+
+    Notes
+    -----
+    This is an interface to the R-modified LINPACK routine ``dqrdc2`` and
+    ``dtrco``.
+
+    When ``exact=False``, this function uses a QR decomposition rather than
+    a SVD decomposition in the case of `numpy.linalg.cond`. This is the same
+    behaviour as :r:`kappa`.
+
     Examples
     --------
     >>> import numpy
     >>> import rlinalg
 
     >>> a = numpy.stack([numpy.ones(10), numpy.arange(1, 11)])
-    >>> rlinalg.kappa(a)
+    >>> rlinalg.cond(a)
     15.7059...
-    >>> rlinalg.kappa(a, exact=True)
+    >>> rlinalg.cond(a, exact=True)
+    13.6790...
+    >>> numpy.linalg.cond(a)
     13.6790...
 
     """
