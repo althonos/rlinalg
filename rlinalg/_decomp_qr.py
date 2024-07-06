@@ -66,6 +66,15 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     If ``mode=economic``, the shapes of Q and R are (M, K) and (K, N) instead
     of (M,M) and (M,N), with ``K=min(M,N)``.
 
+    See Also
+    --------
+    `numpy.linalg.qr`
+        The NumPy implementation based on LAPACK.
+    `scipy.linalg.qr`
+        The SciPy implementation based on LAPACK.
+    `qr <https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr>`_
+        Documentation of the equivalent R function ``qr``.
+
     Examples
     --------
     >>> import numpy
@@ -241,6 +250,11 @@ def qr_multiply(
     -----
     This is an interface to the R-modified LINPACK routine ``dqrdc2``
     and ``dqrsl``.
+
+    See Also
+    --------
+    `scipy.linalg.qr`
+        The SciPy implementation based on LAPACK.
 
     Examples
     --------

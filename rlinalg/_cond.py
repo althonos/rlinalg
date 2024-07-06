@@ -72,7 +72,14 @@ def cond(
 
     When ``exact=False``, this function uses a QR decomposition rather than
     a SVD decomposition in the case of `numpy.linalg.cond`. This is the same
-    behaviour as :r:`kappa`.
+    behaviour as the R function ``kappa``.
+
+    See Also
+    --------
+    `numpy.linalg.cond`
+        The NumPy implementation using an SVD decomposition.
+    `kappa <https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/kappa>`_
+        Documentation of the equivalent R function ``kappa``.
 
     Examples
     --------

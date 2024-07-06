@@ -15,6 +15,20 @@ import sphinx_bootstrap_theme
 import sys
 import inspect
 
+
+# -- R domain -----
+
+import re
+import string
+
+from docutils import nodes
+from docutils.parsers.rst import directives
+
+from sphinx import addnodes
+from sphinx.roles import XRefRole
+from sphinx.domains import Domain, ObjType, Index
+from sphinx.util.nodes import make_refnode
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -192,8 +206,8 @@ autosummary_generate = []
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
-    "biopython": ("https://biopython.org/docs/latest/api/", None),
-    "scoring-matrices": ("https://scoring-matrices.readthedocs.io/en/stable/", None),
+    "numpy": ("http://docs.scipy.org/doc/numpy", None),
+    "scipy": ("http://docs.scipy.org/doc/scipy/reference", None),
 }
 
 # -- Options for recommonmark extension --------------------------------------
@@ -220,4 +234,8 @@ extlinks = {
     "pmc": ("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC%s", "PMC%s"),
     "isbn": ("https://www.worldcat.org/isbn/%s", "ISBN:%s"),
     "wiki": ("https://en.wikipedia.org/wiki/%s", "Wikipedia:%s"),
+    "r": (
+        "https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/%s/",
+        "%s",
+    ),
 }

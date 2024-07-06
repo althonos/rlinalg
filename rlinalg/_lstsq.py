@@ -47,7 +47,16 @@ def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
     -----
     This function uses a QR decomposition rather than a SVD decomposition
     in the case of `numpy.linalg.lstsq` or `scipy.linalg.lstsq`. This is
-    the same behaviour as :r:`lm.fit`.
+    the same behaviour as :r:func:`lm.fit`.
+
+    See Also
+    --------
+    `numpy.linalg.lstsq`
+        The NumPy implementation using LAPACK.
+    `scipy.linalg.lstsq`
+        The NumPy implementation using LAPACK.
+    `lm.fit <https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm.fit>`_
+        Documentation of the equivalent R function ``lm.fit``.
 
     Examples
     --------
