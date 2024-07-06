@@ -4,9 +4,10 @@ requires = ['meson-python', 'numpy >=1.0']
 
 [project]
 name = 'rlinalg'
+version = "0.1.0"
 description = 'Linear Algebra routines for Python as implemented in the R language.'
 readme = 'README.md'
-requires-python = '>=3.6'
+requires-python = '>=3.7'
 license = {file = 'COPYING'}
 authors = [
   {name = 'Martin Larralde', email = 'martin.larralde@embl.de'},
@@ -19,7 +20,6 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
     "Programming Language :: Fortran",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -32,7 +32,6 @@ classifiers = [
 dependencies = [
     "numpy >= 1.0"
 ]
-dynamic = ["version"]
 
 [project.urls]
 "Documentation" = "https://rlinalg.readthedocs.io/en/stable/"
@@ -43,4 +42,7 @@ dynamic = ["version"]
 "PyPI" = "https://pypi.org/project/rlinalg"
 
 [tool.cibuildwheel.linux]
-before-all = "yum -y install openblas-devel gcc-gfortran"
+before-all = "yum -y install blas-devel"
+
+[tool.cibuildwheel.linux.config-settings]
+setup-args="-Dblas=blas"

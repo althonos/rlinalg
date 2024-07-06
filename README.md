@@ -4,7 +4,7 @@
 
 [![Actions](https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/test.yml?branch=main&logo=github&style=flat-square&maxAge=300)](https://github.com/althonos/rlinalg/actions)
 [![Coverage](https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/rlinalg/)
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
+[![License](https://img.shields.io/badge/license-GPLv3+-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![PyPI](https://img.shields.io/pypi/v/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg)
 [![Bioconda](https://img.shields.io/conda/vn/bioconda/rlinalg?style=flat-square&maxAge=3600&logo=anaconda)](https://anaconda.org/bioconda/rlinalg)
 [![Wheel](https://img.shields.io/pypi/wheel/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
@@ -83,13 +83,13 @@ from source.
 <!-- ### 📋 Features -->
 
 
-<!-- ## 🔧 Installing
+## 🔧 Installing
 
 Install the `rlinalg` package directly from [PyPi](https://pypi.org/project/rlinalg)
 which hosts universal wheels that can be installed with `pip`:
 ```console
 $ pip install rlinalg
-``` -->
+```
 
 <!-- ## 📖 Documentation
 

@@ -1,7 +1,6 @@
 project(
     'rlinalg', 
     ['c', 'fortran'],
-    version : '0.0.1',
     default_options : {
       'fortran_std' : 'legacy',
     }
@@ -40,7 +39,11 @@ incdir_f2py = run_command(python,
 inc_np = include_directories(incdir_numpy, incdir_f2py)
 
 # find BLAS dependncy
-blas_dep = dependency(get_option('blas'))
+if get_option('blas') == 'blas'
+  blas_dep = declare_dependency(link_args : ['-lblas'])
+else
+  blas_dep = dependency(get_option('blas'))
+endif
 
 # build package
 subdir('rlinalg')

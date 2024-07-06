@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-[Unreleased]: https://github.com/althonos/rlinalg/compare/25f9300...HEAD
+[Unreleased]: https://github.com/althonos/rlinalg/compare/v0.1.0...HEAD
+
+
+## [v0.1.0]
+[v0.1.0]: https://github.com/althonos/rlinalg/compare/25f9300...v0.1.0
 
 Initial release.
