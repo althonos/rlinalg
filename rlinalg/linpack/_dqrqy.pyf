@@ -1,16 +1,15 @@
 !    -*- f90 -*-
 ! Note: the context of this file is case sensitive.
 
-subroutine dqrqy(x, ldx, p, n, k, qraux, y, ny, qy) ! in _dqrqy.f
+subroutine dqrqy(x, ldx, p, n, k, qraux, y, ny) ! in _dqrqy.f
     double precision dimension(ldx,p),intent(in,overwrite) :: x
     integer, depend(x),check(shape(x, 0) == ldx),intent(in) :: ldx=shape(x, 0)
     integer, depend(x),intent(in) :: p=shape(x, 1)
     integer, optional,check(shape(x, 0) >= n),depend(y),intent(in) :: n=shape(y,0)
     integer, optional,check(shape(x, 1) >= k),depend(x),intent(in) :: k=shape(x,1)
-    double precision dimension(p),depend(p),intent(in) :: qraux
-    double precision dimension(n,ny),intent(in) :: y
+    double precision dimension(k),depend(k),intent(in) :: qraux
+    double precision dimension(n,ny),intent(in,out,overwrite) :: y
     integer, optional,depend(y),intent(in) :: ny=shape(y, 1)
-    double precision dimension(n,ny),depend(n,ny,y),intent(in,out) :: qy = 0
 end subroutine dqrqy
 
 ! This file was auto-generated with f2py (version:2.0.0).

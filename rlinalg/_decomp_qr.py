@@ -157,7 +157,6 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
             k=k,
             overwrite_x=True,
             overwrite_y=True,
-            check_finite=False,
         )
     elif mode == "economic":
         D = numpy.eye(M, N, dtype=numpy.double, order="F")
@@ -168,7 +167,6 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
             k=k,
             overwrite_x=True,
             overwrite_y=True,
-            check_finite=False,
         )
     else:
         D = numpy.eye(M, dtype=numpy.double, order="F")
@@ -179,13 +177,20 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
             k=k,
             overwrite_x=True,
             overwrite_y=True,
-            check_finite=False,
         )
 
     return QRResult(Q, R, P, k)
 
 
-def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=False):
+def qr_multiply(
+    a,
+    c,
+    mode="right",
+    tol=1e-7,
+    check_finite=True,
+    overwrite_a=False,
+    overwrite_c=False,
+):
     """
     Calculate the QR decomposition and multiply Q with a matrix.
 
@@ -281,10 +286,24 @@ def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=Fal
             c1 = numpy.pad(c1, (0, M - c1.shape[0]))
         # compute QC = Q @ c with c of dim (M,1)
         if vector:
-            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k, overwrite_x=True)[:, 0]
+            QC = linpack.dqrqy(
+                QR[:, :],
+                tau[:k],
+                c1[:M],
+                k=k,
+                overwrite_x=True,
+                overwrite_y=overwrite_c,
+            )
         # compute QC = Q @ c with c of dim (M,*)
         else:
-            QC = linpack.dqrqy(QR[:, :], tau[:k], c1[:M], k=k, overwrite_x=True)[:, :]
+            QC = linpack.dqrqy(
+                QR[:, :],
+                tau[:k],
+                c1[:M],
+                k=k,
+                overwrite_x=True,
+                overwrite_y=overwrite_c,
+            )
             # make sure the resulting dimension is at most
             if c1.shape[0] > QR.shape[1]:
                 QC = QC[:, : QR.shape[1]]
@@ -295,13 +314,27 @@ def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=Fal
             raise ValueError(
                 f"Array shapes are not compatible for c @ Q operation: {(1, c1.shape[0])} vs {QR.shape}"
             )
-        QC = linpack.dqrqty(QR[:, :k], tau[:k], c1[:M], k=k).T[0, :k]
+        QC = linpack.dqrqty(
+            QR[:, :k],
+            tau[:k],
+            c1[:M],
+            k=k,
+            overwrite_y=overwrite_c,
+            overwrite_x=True,
+        )[:k]
     else:
         # compute QC = c @ Q with c of dim (*,M)
         if c1.shape[1] != QR.shape[0]:
             raise ValueError(
                 f"Array shapes are not compatible for c @ Q operation: {c1.shape} vs {QR.shape}"
             )
-        QC = linpack.dqrqty(QR[:, :k], tau[:k], c1.T[:M], k=k).T[:, :k]
+        QC = linpack.dqrqty(
+            QR[:, :k],
+            tau[:k],
+            c1.T[:M],
+            k=k,
+            overwrite_x=True,
+            overwrite_y=overwrite_c,
+        ).T[:, :k]
 
     return QC, R, P, k
