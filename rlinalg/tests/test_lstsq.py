@@ -57,10 +57,6 @@ class TestLstsq(unittest.TestCase):
             self.assertEqual(r, 2, f"expected efficient rank 2, got {r}")
             assert_allclose(x, (-0.3333333, 0.6666667, 0.0), atol=1e-7)
 
-    # @pytest.mark.parametrize("dtype", REAL_DTYPES)
-    # @pytest.mark.parametrize("n", (20, 200))
-    # @pytest.mark.parametrize("lapack_driver", lapack_drivers)
-    # @pytest.mark.parametrize("overwrite", (True, False))
     def test_random_exact(self):
         rng = numpy.random.RandomState(1234)
         for n in (20, 200):

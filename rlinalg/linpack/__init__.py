@@ -13,17 +13,19 @@ __all__ = ["dqrdc2", "dqrqy", "dqrqty", "dtrco", "dqrsl", "dqrls"]
 
 
 def dqrqy(x, qraux, y, k=None, overwrite_x=True):
-    """Implementation of `dqrqty.`"""
+    """
+    Implementation of `dqrqty.`
+    """
     ldx = x.shape[0]
     ny = y.shape[-1]
-    dummy = numpy.array(0)
+    dummy = numpy.array(0, dtype=numpy.double)
 
     if k is None:
         k = x.shape[1]
 
     if y.ndim == 1:
-        qy = numpy.zeros((y.shape[0], 1), order="F")
-        info = dqrsl(
+        qy = numpy.zeros((y.shape[0], 1), order="C")
+        dqrsl(
             x[:, :],
             k=k,
             qraux=qraux,
@@ -40,7 +42,7 @@ def dqrqy(x, qraux, y, k=None, overwrite_x=True):
     else:
         qy = numpy.zeros_like(y, order="F")
         for j in range(ny):
-            info = dqrsl(
+            dqrsl(
                 x[:, :],
                 k=k,
                 qraux=qraux,
@@ -58,10 +60,12 @@ def dqrqy(x, qraux, y, k=None, overwrite_x=True):
 
 
 def dqrqty(x, qraux, y, k=None, overwrite_x=True):
-    """Implementation of `dqrqty.`"""
+    """
+    Implementation of `dqrqty.`
+    """
     ldx = x.shape[0]
     ny = y.shape[-1]
-    dummy = numpy.array(0)
+    dummy = numpy.array(0, dtype=numpy.double)
 
     if k is None:
         k = x.shape[1]

@@ -9,11 +9,11 @@ subroutine dqrsl(x,ldx,n,k,qraux,y,qy,qty,b,rsd,xb,job,info) ! in ../../vendor/r
     integer, optional,check(shape(x, 1) >= k),depend(x) :: k=shape(x,1)
     double precision dimension(p),depend(p),intent(in) :: qraux
     double precision dimension(n),depend(n),intent(in) :: y
-    double precision dimension(*),depend(*),intent(in,out,overwrite) :: qy
-    double precision dimension(*),depend(*),intent(in,out,overwrite) :: qty
-    double precision dimension(*),depend(*),intent(in,out,overwrite) :: b
-    double precision dimension(*),depend(*),intent(in,out,overwrite) :: rsd
-    double precision dimension(*),depend(*),intent(in,out,overwrite) :: xb
+    double precision dimension(*),depend(*),intent(inout) :: qy
+    double precision dimension(*),depend(*),intent(inout) :: qty
+    double precision dimension(*),depend(*),intent(inout) :: b
+    double precision dimension(*),depend(*),intent(inout) :: rsd
+    double precision dimension(*),depend(*),intent(inout) :: xb
     integer :: job
     integer intent(out) :: info = 0
 end subroutine dqrsl

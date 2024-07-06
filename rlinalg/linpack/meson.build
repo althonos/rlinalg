@@ -6,7 +6,6 @@ python.install_sources(python_sources, subdir : 'rlinalg/linpack')
 
 fortan_sources = [
      '../../vendor/r-source/src/appl/dqrdc2.f',
-     '../../vendor/r-source/src/appl/dqrutl.f',
      '../../vendor/r-source/src/appl/dtrco.f',
      '../../vendor/r-source/src/appl/dqrsl.f',
      '../../vendor/r-source/src/appl/dqrls.f',
@@ -14,7 +13,6 @@ fortan_sources = [
 
 pyf_sources = [
   '_dqrdc2.pyf',
-  '_dqrutl.pyf',
   '_dqrtco.pyf',
   '_dqrsl.pyf',
   '_dqrls.pyf'
