@@ -216,21 +216,21 @@ def qr_multiply(a, c, mode="right", tol=1e-7, check_finite=True, overwrite_a=Fal
     Examples
     --------
     >>> import numpy as np
-    >>> from scipy.linalg import qr_multiply, qr
+    >>> from rlinalg import qr, qr_multiply
     >>> A = np.array([[1, 3, 3], [2, 3, 2], [2, 3, 3], [1, 3, 2]])
-    >>> qc, r1, piv1 = qr_multiply(A, 2*np.eye(4), pivoting=1)
+    >>> qc, r1, piv1, rank = qr_multiply(A, 2*np.eye(4))
     >>> qc
-    array([[-1.,  1., -1.],
-           [-1., -1.,  1.],
-           [-1., -1., -1.],
-           [-1.,  1.,  1.]])
+    array([[-0.63245553,  1.26491106, -1.        ],
+           [-1.26491106, -0.63245553,  1.        ],
+           [-1.26491106, -0.63245553, -1.        ],
+           [-0.63245553,  1.26491106,  1.        ]])
     >>> r1
-    array([[-6.00000000e+00, -3.00000000e+00, -5.00000000e+00],
-           [ 0.00000000e+00, -1.00000000e+00, -1.11022302e-16],
-           [ 0.00000000e+00,  0.00000000e+00, -1.00000000e+00]])
+    array([[-3.16227766, -5.69209979, -4.74341649],
+           [ 0.        ,  1.8973666 ,  1.58113883],
+           [ 0.        ,  0.        , -1.        ]])
     >>> piv1
-    array([1, 0, 2], dtype=int32)
-    >>> q2, r2, piv2 = qr(A, mode='economic', pivoting=1)
+    array([0, 1, 2], dtype=int32)
+    >>> q2, r2, piv2, rank = qr(A, mode='economic')
     >>> np.allclose(2*q2 - qc, np.zeros((4, 3)))
     True
 
