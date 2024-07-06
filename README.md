@@ -1,6 +1,6 @@
 # ®️ `rlinalg` [![Stars](https://img.shields.io/github/stars/althonos/rlinalg.svg?style=social&maxAge=3600&label=Star)](https://github.com/althonos/rlinalg/stargazers)
 
-*Linear Algebra routines as implemented in the [R language](https://www.r-project.org/).*
+*Linear Algebra routines for Python as implemented in the [R language](https://www.r-project.org/).*
 
 [![Actions](https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/test.yml?branch=main&logo=github&style=flat-square&maxAge=300)](https://github.com/althonos/rlinalg/actions)
 [![Coverage](https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/rlinalg/)
@@ -67,7 +67,7 @@ array([[-0.1230915  0.904534   0.4082483]
 
 This library depends on [NumPy], and on the [BLAS] libraries available
 on the system. It is available for all modern Python versions (3.7+).
-Building is done with Meson and requires a Fortran compiler when compiling
+Building is done with [Meson] and requires a Fortran compiler when compiling
 from source.
 
 [`qr`]: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/qr
@@ -78,7 +78,7 @@ from source.
 [SciPy]: https://scipy.org/
 [`dgeqp3`]: https://www.netlib.org/lapack/explore-html-3.6.1/dd/d9a/group__double_g_ecomputational_ga1b0500f49e03d2771b797c6e88adabbb.html
 [`dqrdc`]: https://netlib.org/linpack/dqrdc.f
-
+[Meson]: https://mesonbuild.com/
 
 <!-- ### 📋 Features -->
 

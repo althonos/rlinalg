@@ -4,7 +4,7 @@ requires = ['meson-python', 'numpy >=1.0']
 
 [project]
 name = 'rlinalg'
-description = 'Linear Algebra routines as implemented in the R language'
+description = 'Linear Algebra routines for Python as implemented in the R language.'
 readme = 'README.md'
 requires-python = '>=3.6'
 license = {file = 'COPYING'}
