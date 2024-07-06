@@ -14,7 +14,7 @@ fortan_sources = [
 
 pyf_sources = [
   '_dqrdc2.pyf',
-  '_dqrtco.pyf',
+  '_dtrco.pyf',
   '_dqrsl.pyf',
   '_dqrls.pyf',
   '_dqrqy.pyf',
@@ -24,7 +24,7 @@ linpackmodule = custom_target('_linpackmodule.c',
   input: '_linpack.pyf',
   output: '_linpackmodule.c',
   command: [python, '-m', 'numpy.f2py', '@INPUT@', '--build-dir', '@OUTDIR@' ],
-  depend_files : ['_dqrdc2.pyf']
+  depend_files : pyf_sources,
 )
 
 python.extension_module('_linpack',
