@@ -7,6 +7,21 @@ project(
     }
 )
 
+fortran = meson.get_compiler('fortran')
+if fortran.get_id() == 'gcc' 
+  if get_option('buildtype') == 'debug'
+    add_global_arguments(
+      '-fcheck=all',
+      language: 'fortran'
+    )
+  else
+    add_global_arguments(
+      '-fcheck=no-all',
+      language: 'fortran'
+    )
+  endif
+endif
+
 # load Python dependencies
 py_mod = import('python')
 python = py_mod.find_installation(pure: false)
