@@ -164,7 +164,9 @@ class TestLstsq(unittest.TestCase):
                     x = out[0]
                     r = out[2]
                     self.assertEqual(r, m, f"expected efficient rank {m}, got {r}")
-                    assert_allclose(x, numpy.linalg.lstsq(a, b)[0], atol=1e-7)
+                    assert_allclose(
+                        x, numpy.linalg.lstsq(a, b, rcond=None)[0], atol=1e-7
+                    )
 
     def test_random_underdet(self):
         rng = numpy.random.RandomState(1234)
