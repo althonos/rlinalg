@@ -36,7 +36,7 @@
 #    A copy of the GNU General Public License is available at
 #    https://www.R-project.org/Licenses/
 #
-# The `linalg` library contains code adapted from SciPy, redistributed
+# The `rlinalg` library contains code adapted from SciPy, redistributed
 # and modified under the BSD-3-clause license, see original SciPy
 # copyright below:
 #
@@ -71,6 +71,35 @@
 #    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+"""Low-level LAPACK functions (:mod:`rlinalg.lapack`)
+
+This module contains low-level functions from the LINPACK library.
+
+.. note::
+
+    The common ``overwrite_<>`` option in many routines, allows the
+    input arrays to be overwritten to avoid extra memory allocation.
+    However this requires the array to satisfy two conditions
+    which are memory order and the data type to match exactly the
+    order and the type expected by the routine.
+
+    As an example, if you pass a double precision float array to any
+    ``S....`` routine which expects single precision arguments, f2py
+    will create an intermediate array to match the argument types and
+    overwriting will be performed on that intermediate array.
+
+    Similarly, if a C-contiguous array is passed, f2py will pass a
+    FORTRAN-contiguous array internally. Please make sure that these
+    details are satisfied. More information can be found in the f2py
+    documentation.
+
+.. warning::
+
+    These functions do little to no error checking.
+    It is possible to cause crashes by mis-using them,
+    so prefer using the higher-level routines in `rlinalg`.
+
+"""
 import functools
 
 from .._misc import set_module

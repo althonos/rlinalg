@@ -36,7 +36,7 @@
 #    A copy of the GNU General Public License is available at
 #    https://www.R-project.org/Licenses/
 #
-# The `linalg` library contains code adapted from SciPy, redistributed
+# The `rlinalg` library contains code adapted from SciPy, redistributed
 # and modified under the BSD-3-clause license, see original SciPy
 # copyright below:
 #

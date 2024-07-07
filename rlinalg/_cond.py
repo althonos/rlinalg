@@ -19,7 +19,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-# This `rlinalg` library distributes, builds and links to code from the
+# The `rlinalg` library distributes, builds and links to code from the
 # R project, redistributed and modified under the GNU General Public License
 # version 2 or later:
 #
@@ -36,8 +36,8 @@
 #    A copy of the GNU General Public License is available at
 #    https://www.R-project.org/Licenses/
 #
-# This file contains code adapted from SciPy, redistributed and
-# modified under the BSD-3-clause license, see original SciPy
+# The `rlinalg` library contains code adapted from SciPy, redistributed
+# and modified under the BSD-3-clause license, see original SciPy
 # copyright below:
 #
 #    Copyright (c) 2001-2002 Enthought, Inc. 2003-2024, SciPy Developers.
@@ -178,6 +178,17 @@ def cond(
     13.6790...
     >>> float(numpy.linalg.cond(a))
     13.6790...
+
+    References
+    ----------
+    Anderson., E., et al. (1999) *LAPACK Users' Guide*. Third Edition.
+    SIAM. Available on-line at https://netlib.org/lapack/lug/lapack_lug.html.
+
+    Chambers, J. M. (1992) *Linear models.* Chapter 4 of *Statistical Models
+    in S* eds J. M. Chambers and T. J. Hastie, Wadsworth & Brooks/Cole.
+
+    Dongarra, J. J., Bunch, J. R., Moler, C. B. and Stewart, G. W.
+    (1978) *LINPACK Users Guide.* Philadelphia: SIAM Publications.
 
     """
     if norm not in {None, 1, 2, numpy.inf}:

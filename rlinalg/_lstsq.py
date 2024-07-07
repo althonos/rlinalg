@@ -36,7 +36,7 @@
 #    A copy of the GNU General Public License is available at
 #    https://www.R-project.org/Licenses/
 #
-# The `linalg` library contains code adapted from SciPy, redistributed
+# The `rlinalg` library contains code adapted from SciPy, redistributed
 # and modified under the BSD-3-clause license, see original SciPy
 # copyright below:
 #
@@ -181,6 +181,11 @@ def lstsq(
     >>> p, res, rank = lstsq(M, y)
     >>> p
     array([0.20925829, 0.12013861])
+
+    References
+    ----------
+    Chambers, J. M. (1992) *Linear models.* Chapter 4 of *Statistical Models
+    in S* eds J. M. Chambers and T. J. Hastie, Wadsworth & Brooks/Cole.
 
     """
     a1 = _asarray_validated(a, order="F", dtype=numpy.double, check_finite=check_finite)

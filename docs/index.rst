@@ -94,6 +94,7 @@ Library
    Contributing <contributing>
    API Reference <api/index>
    Changelog <changes>
+   Copyright <copyright>
 
 
 License
