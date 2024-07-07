@@ -1,4 +1,4 @@
-# File rlinalg/linpack/test_qr.py
+# File rlinalg/tests/test_qr.py
 # Part of the `rlinalg` package, https://rlinalg.readthedocs.io
 #
 # The `rlinalg` library is developed and released under the GNU General

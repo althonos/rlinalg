@@ -73,7 +73,7 @@
 """Linear Algebra routines as implemented in the ``R`` language.
 """
 
-__version__ = "0.0.1"
+__version__ = "0.1.1"
 __author__ = "Martin Larralde <martin.larralde@embl.de>"
 __license__ = "GPL-3.0-or-later"
 

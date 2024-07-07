@@ -3,11 +3,10 @@ Installation
 
 .. note::
 
-    Wheels are provided for x86-64 Linux, MacOS and Window, as well as Aarch64
-    Linux and MacOS, but other machines will have to build the wheel from the
-    source distribution. Building ``diced`` involves compiling Rust code. If no
-    Rust compiler is available on the local machine, the setup script will
-    setup one to a temporary location.
+    Wheels are provided for x86-64 Linux linking against OpenBLAS. Other 
+    machines will have to build the wheel from the source distribution. 
+    Building ``rlinalg`` involves compiling Fortran code, and a Fortran
+    compiler is needed to build from source.
 
 
 PyPi
