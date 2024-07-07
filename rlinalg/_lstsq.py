@@ -97,7 +97,7 @@ def lstsq(
     tol: float = 1e-7,
     overwrite_a: bool = False,
     check_finite: bool = True,
-) -> LSTSQResult:
+) -> typing.Tuple[numpy.ndarray, numpy.ndarray, int]:
     """
     Compute least-squares solution to equation Ax = b.
 
