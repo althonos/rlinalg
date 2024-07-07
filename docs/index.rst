@@ -8,7 +8,7 @@ Rlinalg |Stars|
 
 |Actions| |Coverage| |PyPI| |AUR| |Wheel| |Versions| |Implementations| |License| |Source| |Issues| |Docs| |Changelog| |Downloads|
 
-.. |Actions| image:: https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/python.yml?branch=main&logo=github&style=flat-square&maxAge=300
+.. |Actions| image:: https://img.shields.io/github/actions/workflow/status/althonos/rlinalg/test.yml?branch=main&logo=github&style=flat-square&maxAge=300
    :target: https://github.com/althonos/rlinalg/actions
 
 .. |Coverage| image:: https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=600
