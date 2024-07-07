@@ -69,7 +69,7 @@ with pivoting enabled.
 
 The ``rlinalg`` library provides linear algebra routines from R using the
 Fortran sources to allow reproducibility. It exposes an API similar to
-the `scipy` interface for similar functions (`qr`, `kappa`, `lstsq`), 
+the `scipy` interface for similar functions (`qr`, `cond`, `lstsq`), 
 which can be used to get the same results as R.
 It depends on `NumPy`_, and links to the `BLAS <https://www.netlib.org/blas/>`_ 
 libraries available on the system. It is available for all modern Python 

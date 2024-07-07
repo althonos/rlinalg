@@ -54,7 +54,7 @@ using [`qr`] in R will behave differently than an equivalent Python using
 
 The `rlinalg` library provides linear algebra routines from R using the
 Fortran sources to allow reproducibility. It exposes an API similar to
-the `scipy` interface for similar functions (`qr`, `kappa`, `lstsq`), 
+the `scipy` interface for similar functions (`qr`, `cond`, `lstsq`), 
 which can be used to get the same results as R:
 
 ```python
