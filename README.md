@@ -6,7 +6,7 @@
 [![Coverage](https://img.shields.io/codecov/c/gh/althonos/rlinalg?style=flat-square&maxAge=3600)](https://codecov.io/gh/althonos/rlinalg/)
 [![License](https://img.shields.io/badge/license-GPLv3+-blue.svg?style=flat-square&maxAge=2678400)](https://choosealicense.com/licenses/gpl-3.0/)
 [![PyPI](https://img.shields.io/pypi/v/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg)
-[![Bioconda](https://img.shields.io/conda/vn/bioconda/rlinalg?style=flat-square&maxAge=3600&logo=anaconda)](https://anaconda.org/bioconda/rlinalg)
+[![AUR](https://img.shields.io/aur/version/python-rlinalg?logo=archlinux&style=flat-square&maxAge=3600)](https://aur.archlinux.org/packages/python-rlinalg)
 [![Wheel](https://img.shields.io/pypi/wheel/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
 [![Python Versions](https://img.shields.io/pypi/pyversions/rlinalg.svg?style=flat-square&maxAge=3600)](https://pypi.org/project/rlinalg/#files)
 [![Python Implementations](https://img.shields.io/pypi/implementation/rlinalg?style=flat-square&maxAge=3600&label=impl)](https://pypi.org/project/rlinalg/#files)
@@ -91,7 +91,7 @@ which hosts universal wheels that can be installed with `pip`:
 $ pip install rlinalg
 ```
 
-<!-- ## 📖 Documentation
+## 📖 Documentation
 
 A complete [API reference](https://rlinalg.readthedocs.io/en/stable/api.html)
 can be found in the [online documentation](https://rlinalg.readthedocs.io/),
@@ -99,7 +99,7 @@ or directly from the command line using
 [`pydoc`](https://docs.python.org/3/library/pydoc.html):
 ```console
 $ pydoc rlinalg
-``` -->
+```
 
 <!-- ## 💡 Example -->
 
@@ -113,11 +113,11 @@ or ask something. If you are filing in on a bug, please include as much
 information as you can about the issue, and try to recreate the same bug
 in a simple, easily reproducible situation.
 
-<!-- ### 🏗️ Contributing
+### 🏗️ Contributing
 
 Contributions are more than welcome! See
 [`CONTRIBUTING.md`](https://github.com/althonos/rlinalg/blob/main/CONTRIBUTING.md)
-for more details. -->
+for more details.
 
 ## 📋 Changelog
 
@@ -133,6 +133,8 @@ It includes some code redistributed from the R language, which is licensed under
 [GNU General Public License v2.0](https://choosealicense.com/licenses/gpl-2.0/)
 or later. Some tests were adapted from SciPy, which is developed under the 
 [BSD-3-clause](https://choosealicense.com/licenses/bsd-3-clause/) license.
+See full [copyright notice](https://rlinalg.readthedocs.io/en/stable/copyright.html)
+on the [online documentation](https://rlinalg.readthedocs.io/).
 
 *This project is in no way not affiliated, sponsored, or otherwise endorsed
 by the [`R` project](https://www.r-project.org/).
