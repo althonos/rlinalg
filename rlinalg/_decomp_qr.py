@@ -85,11 +85,15 @@ if typing.TYPE_CHECKING:
     import numpy.typing
 
 
-Q = typing.TypeVar("Q")
+class QRResult(typing.NamedTuple):
+    Q: numpy.ndarray
+    R: numpy.ndarray
+    P: numpy.ndarray
+    rank: int
 
 
-class QRResult(typing.NamedTuple, typing.Generic[Q]):
-    Q: Q
+class QRRawResult(typing.NamedTuple):
+    Q: typing.Tuple[numpy.ndarray, numpy.ndarray]
     R: numpy.ndarray
     P: numpy.ndarray
     rank: int
@@ -279,7 +283,7 @@ def qr(
         elif mode == "raw":
             QR = numpy.empty_like(a1, shape=(M, N))
             tau = numpy.zeros_like(a1, shape=(K,))
-            return ((QR, tau), R, P, 0)  # type: ignore
+            return QRRawResult((QR, tau), R, P, 0)
         return QRResult(Q, R, P, 0)
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
@@ -296,7 +300,7 @@ def qr(
     if mode == "r":
         return R, P, k
     elif mode == "raw":
-        return QRResult((QR, tau), R, P, k)
+        return QRRawResult((QR, tau), R, P, k)
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
