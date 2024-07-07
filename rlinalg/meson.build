@@ -4,6 +4,7 @@ python_sources = [
     '_cond.py',
     '_lstsq.py',
     '_misc.py',
+    'py.typed',
 ]
 
 python.install_sources(python_sources, subdir: 'rlinalg')

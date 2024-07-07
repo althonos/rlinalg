@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import typing
 import math
 
 import numpy
@@ -6,8 +9,17 @@ from . import linpack
 from ._misc import _asarray_validated, set_module, _datacopied
 from ._decomp_qr import qr
 
+if typing.TYPE_CHECKING:
+    from typing import Literal
+    import numpy.typing
 
-def _kappa_tri(a, lower=False, norm=None, check_finite=True):
+
+def _kappa_tri(
+    a: numpy.typing.ArrayLike,
+    lower: bool = False,
+    norm: typing.Union[Literal[1], Literal[numpy.inf]] = 1,  # type: ignore
+    check_finite: bool = True,
+) -> float:
     a1 = numpy.atleast_2d(_asarray_validated(a, check_finite=check_finite))
     m, n = a1.shape
 
@@ -23,14 +35,14 @@ def _kappa_tri(a, lower=False, norm=None, check_finite=True):
 
 @set_module("rlinalg")
 def cond(
-    a,
-    overwrite_a=False,
-    exact=False,
-    norm=None,
-    method="qr",
-    check_finite=True,
-    lower=False,
-):
+    a: numpy.typing.ArrayLike,
+    overwrite_a: bool = False,
+    exact: bool = False,
+    norm: typing.Union[Literal[1], Literal[2], Literal[numpy.inf], None] = None,  # type: ignore
+    method: typing.Union[Literal["qr"], Literal["raw"]] = "qr",
+    check_finite: bool = True,
+    lower: bool = False,
+) -> float:
     """
     Compute or estimate the condition number of a matrix.
 

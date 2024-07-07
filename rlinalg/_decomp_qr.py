@@ -1,15 +1,73 @@
-import collections
+from __future__ import annotations
+
+import typing
+
 import numpy
 
 from . import linpack
-from ._misc import _datacopied, set_module
+from ._misc import _datacopied, set_module, _asarray_validated
+
+if typing.TYPE_CHECKING:
+    from typing import Literal
+    import numpy.typing
 
 
-QRResult = collections.namedtuple("QRResult", "Q R P rank")
+Q = typing.TypeVar("Q")
+
+
+class QRResult(typing.NamedTuple, typing.Generic[Q]):
+    Q: Q
+    R: numpy.ndarray
+    P: numpy.ndarray
+    rank: int
+
+
+@typing.overload
+def qr(
+    a: numpy.typing.ArrayLike,
+    mode: Literal["full", "economic"],
+    tol: float = 1e-7,
+    check_finite: bool = True,
+    overwrite_a: bool = False,
+) -> typing.Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, int]: ...
+
+
+@typing.overload
+def qr(
+    a: numpy.typing.ArrayLike,
+    mode: Literal["r"],
+    tol: float = 1e-7,
+    check_finite: bool = True,
+    overwrite_a: bool = False,
+) -> typing.Tuple[numpy.ndarray, numpy.ndarray, int]: ...
+
+
+@typing.overload
+def qr(
+    a: numpy.typing.ArrayLike,
+    mode: Literal["raw"],
+    tol: float = 1e-7,
+    check_finite: bool = True,
+    overwrite_a: bool = False,
+) -> typing.Tuple[
+    typing.Tuple[numpy.ndarray, numpy.ndarray], numpy.ndarray, numpy.ndarray, int
+]: ...
 
 
 @set_module("rlinalg")
-def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
+def qr(
+    a: numpy.typing.ArrayLike,
+    mode: Literal["full", "r", "economic", "raw"] = "full",
+    tol: float = 1e-7,
+    check_finite: bool = True,
+    overwrite_a: bool = False,
+) -> typing.Union[
+    typing.Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, int],
+    typing.Tuple[
+        typing.Tuple[numpy.ndarray, numpy.ndarray], numpy.ndarray, numpy.ndarray, int
+    ],
+    typing.Tuple[numpy.ndarray, numpy.ndarray, int],
+]:
     """
     Compute QR decomposition of a matrix.
 
@@ -114,8 +172,7 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
             "Mode argument should be one of ['full', 'r', 'economic', 'raw']"
         )
 
-    asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-    a1 = asarray(a, order="F", dtype=numpy.double)
+    a1 = _asarray_validated(a, order="F", dtype=numpy.double, check_finite=check_finite)
     if len(a1.shape) != 2:
         raise ValueError("expected a 2-D array")
 
@@ -138,7 +195,7 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
         elif mode == "raw":
             QR = numpy.empty_like(a1, shape=(M, N))
             tau = numpy.zeros_like(a1, shape=(K,))
-            return ((QR, tau), R, P, 0)
+            return ((QR, tau), R, P, 0)  # type: ignore
         return QRResult(Q, R, P, 0)
 
     overwrite_a = overwrite_a or _datacopied(a1, a)
@@ -155,7 +212,7 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     if mode == "r":
         return R, P, k
     elif mode == "raw":
-        return ((QR, tau), R, P, k)
+        return QRResult((QR, tau), R, P, k)
 
     if M < N:
         D = numpy.eye(M, dtype=numpy.double, order="F")
@@ -191,15 +248,22 @@ def qr(a, mode="full", tol=1e-7, check_finite=True, overwrite_a=False):
     return QRResult(Q, R, P, k)
 
 
+class QRMultiplyResult(typing.NamedTuple):
+    CQ: numpy.ndarray
+    R: numpy.ndarray
+    P: numpy.ndarray
+    rank: int
+
+
 def qr_multiply(
-    a,
-    c,
-    mode="right",
+    a: numpy.typing.ArrayLike,
+    c: numpy.typing.ArrayLike,
+    mode: Literal["left", "right"] = "right",
     tol=1e-7,
     check_finite=True,
     overwrite_a=False,
     overwrite_c=False,
-):
+) -> QRMultiplyResult:
     """
     Calculate the QR decomposition and multiply Q with a matrix.
 
@@ -286,12 +350,16 @@ def qr_multiply(
     )
     M, N = QR.shape
 
-    asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-    c1 = asarray(c, order="F" if mode == "left" else "C", dtype=numpy.double)
+    c1 = _asarray_validated(
+        c,
+        order="F" if mode == "left" else "C",
+        dtype=numpy.double,
+        check_finite=check_finite,
+    )
     vector = c1.ndim == 1
 
     if QR.size == 0:
-        return numpy.empty_like(c1), R, P, k
+        return QRMultiplyResult(numpy.empty_like(c1), R, P, k)
 
     if mode == "left":
         # FIXME: check if padding is really necessary here?
@@ -351,4 +419,4 @@ def qr_multiply(
             overwrite_y=overwrite_c,
         ).T[:, :k]
 
-    return QC, R, P, k
+    return QRMultiplyResult(QC, R, P, k)

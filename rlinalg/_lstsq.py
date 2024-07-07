@@ -1,11 +1,30 @@
+from __future__ import annotations
+
+import typing
+
 import numpy
 
 from . import linpack
-from ._misc import _datacopied, set_module
+from ._misc import _datacopied, set_module, _asarray_validated
+
+if typing.TYPE_CHECKING:
+    import numpy.typing
+
+
+class LSTSQResult(typing.NamedTuple):
+    x: numpy.ndarray
+    residues: numpy.ndarray
+    rank: int
 
 
 @set_module("rlinalg")
-def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
+def lstsq(
+    a: numpy.typing.ArrayLike,
+    b: numpy.typing.ArrayLike,
+    tol: float = 1e-7,
+    overwrite_a: bool = False,
+    check_finite: bool = True,
+) -> LSTSQResult:
     """
     Compute least-squares solution to equation Ax = b.
 
@@ -91,15 +110,12 @@ def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
     array([0.20925829, 0.12013861])
 
     """
-
-    asarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-
-    a1 = asarray(a, order="F", dtype=numpy.double)
+    a1 = _asarray_validated(a, order="F", dtype=numpy.double, check_finite=check_finite)
     if len(a1.shape) != 2:
         raise ValueError("expected a 2-D array")
     m, n = a1.shape
 
-    b1 = asarray(b, order="F", dtype=numpy.double)
+    b1 = _asarray_validated(b, order="F", dtype=numpy.double, check_finite=check_finite)
     vector = len(b1.shape) == 1
     if not 1 <= len(b1.shape) <= 2:
         raise ValueError("expected a 1-D or 2-D array")
@@ -115,7 +131,7 @@ def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
             residues = numpy.linalg.norm(b1, axis=0) ** 2
         else:
             residues = numpy.empty((0,))
-        return x, residues, 0
+        return LSTSQResult(x, residues, 0)
 
     qr, x, residues, _, rank, jpvt, _ = linpack.dqrls(
         x=a1, y=b, tol=tol, overwrite_x=overwrite_a
@@ -131,4 +147,4 @@ def lstsq(a, b, tol=1e-7, overwrite_a=False, check_finite=True):
         x = x[:, 0]
         residues = residues[:, 0]
 
-    return x, residues, rank
+    return LSTSQResult(x, residues, rank)

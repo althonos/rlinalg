@@ -46,3 +46,7 @@ before-all = "yum -y install blas-devel"
 
 [tool.cibuildwheel.linux.config-settings]
 setup-args="-Dblas=blas"
+
+[tool.mypy]
+plugins = "numpy.typing.mypy_plugin"
+ignore_missing_imports = "true"

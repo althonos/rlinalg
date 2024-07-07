@@ -1,4 +1,12 @@
+from __future__ import annotations
+
+import typing
+
 import numpy
+
+if typing.TYPE_CHECKING:
+    import numpy.typing
+    from typing import Literal
 
 
 def set_module(module):
@@ -18,13 +26,13 @@ def set_module(module):
 
 
 def _asarray_validated(
-    a,
-    check_finite=True,
-    sparse_ok=False,
-    mask_ok=False,
-    dtype=numpy.double,
-    order="F",
-):
+    a: numpy.typing.ArrayLike,
+    check_finite: bool = True,
+    sparse_ok: bool = False,
+    mask_ok: bool = False,
+    dtype: numpy.typing.DTypeLike = numpy.double,
+    order: Literal["C", "F", "A"] = "F",
+) -> numpy.ndarray:
     """
     Helper function for argument validation (adapted from SciPy).
 
@@ -73,11 +81,10 @@ def _asarray_validated(
         if numpy.ma.isMaskedArray(a):
             raise ValueError("masked arrays are not supported")
     toarray = numpy.asarray_chkfinite if check_finite else numpy.asarray
-    a = toarray(a, dtype=dtype, order=order)
-    return a
+    return toarray(a, dtype=dtype, order=order)  # type: ignore
 
 
-def _datacopied(arr, original):
+def _datacopied(arr: numpy.ndarray, original: numpy.typing.ArrayLike) -> bool:
     """
     Strict check for `arr` not sharing any data with `original`,
     under the assumption that arr = asarray(original)
